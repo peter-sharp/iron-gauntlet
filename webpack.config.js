@@ -9,6 +9,9 @@ module.exports = {
   resolve:{
     modules: [path.resolve(__dirname, "src"), "node_modules", path.resolve(__dirname, "assets")]
   },
+  externals: {
+    phaser: "Phaser"
+  },
   module: {
     rules: [
       {

@@ -1,3 +1,4 @@
+// not used
 export default class Map {
 
   constructor(rows, cols) {

@@ -1,7 +1,8 @@
 import Crosshairs from '../prefabs/crosshairs';
 import Target from '../prefabs/target';
 import Map from 'models/map';
-import AsciiDisplay from 'models/ascii-display';
+import {randomTilemap} from 'map/generators/random';
+
 class Game extends Phaser.State {
 
   constructor(rows, cols, tileSize) {
@@ -31,9 +32,19 @@ class Game extends Phaser.State {
     //setup audio
     this.gunshot = this.game.add.audio('gunshot');
 
-    this.map = new Map(this.rows, this.cols);
+    randomTilemap(this.game, this.rows, this.cols, 'terrain')
 
-    this.asciiDisplay = new AsciiDisplay(this, this.map, this.tileSize);
+    this.map = this.game.add.tilemap('terrain', this.tileSize, this.tileSize);
+
+    this.map.addTilesetImage('tiles_terrain');
+
+    var layer = this.map.createLayer(0);
+
+
+
+    layer.resizeWorld();
+
+
 
     //setup prefabs
     // this.crosshairs = new Crosshairs(this.game);
@@ -45,7 +56,7 @@ class Game extends Phaser.State {
     // this.endGameTimer = this.game.time.create();
     // this.endGameTimer.add(Phaser.Timer.SECOND * 15, this.endGame,this);
     // this.endGameTimer.start();
-    this.asciiDisplay.render();
+
   }
 
   onKeyUp(event) {

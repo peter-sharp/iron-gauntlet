@@ -6,7 +6,7 @@ import Gameover from './states/gameover';
 
 
 const game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, 'iron-gauntlet-game');
-const tileSize = 32;
+const tileSize = 16;
 const rows = Math.floor(window.innerHeight / tileSize);
 const cols = Math.floor(window.innerWidth / tileSize / 0.6);
 
