@@ -1,7 +1,7 @@
 import Crosshairs from '../prefabs/crosshairs';
 import Target from '../prefabs/target';
 import Map from 'models/map';
-import {randomTilemap} from 'map/generators/random';
+import {voronoiTilemap} from 'map/generators/voronoi';
 
 class Game extends Phaser.State {
 
@@ -32,7 +32,7 @@ class Game extends Phaser.State {
     //setup audio
     this.gunshot = this.game.add.audio('gunshot');
 
-    randomTilemap(this.game, this.rows, this.cols, 'terrain')
+    voronoiTilemap(this.game, this.rows, this.cols, 'terrain', this.tileSize);
 
     this.map = this.game.add.tilemap('terrain', this.tileSize, this.tileSize);
 
