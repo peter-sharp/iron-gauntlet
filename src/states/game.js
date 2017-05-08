@@ -1,6 +1,6 @@
 import Crosshairs from '../prefabs/crosshairs';
 import Target from '../prefabs/target';
-import Soldiers from '../prefabs/soldiers';
+import soldiers from '../prefabs/soldiers';
 import Marker from '../prefabs/marker';
 import Map from 'models/map';
 import {voronoiTilemap} from 'map/generators/voronoi';
@@ -63,17 +63,9 @@ class Game extends Phaser.State {
 
     this.game.input.addMoveCallback(this.updateMarker, this);
 
+    var player1 = this.game.add.group();
 
-    //setup prefabs
-    // this.crosshairs = new Crosshairs(this.game);
-    // this.target = new Target(this.game,this.game.world.centerX,this.game.world.centerY);
-    // this.game.add.existing(this.crosshairs);
-    // this.game.add.existing(this.target);
-
-    //setup a timer to end the game
-    // this.endGameTimer = this.game.time.create();
-    // this.endGameTimer.add(Phaser.Timer.SECOND * 15, this.endGame,this);
-    // this.endGameTimer.start();
+    soldiers(this.game, 32, 64, player1);
 
   }
 
