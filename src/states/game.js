@@ -59,9 +59,22 @@ class Game extends Phaser.State {
 
     voronoiTilemap(this.game, this.map);
 
-    this.marker = new Marker(this.game, 0, 0, this.tileSize);
+    var cursorStates = {
+      NoGo: {
+        opacity: 1,
+        color: 0xff0000
 
-    this.game.input.addMoveCallback(this.updateMarker, this);
+      },
+
+      Go: {
+        opacity: 0.2,
+        color: 0x000000
+      }
+    }
+
+    this.cursor = marker(this.game, 0, 0, this.tileSize, cursorStates);
+
+    this.game.input.addMoveCallback(this.updateCursor, this);
 
     var player1 = this.game.add.group();
 
@@ -84,7 +97,7 @@ class Game extends Phaser.State {
   // this.display.render();
   }
 
-  updateMarker() {
+  updateCursor() {
     var pointer = this.game.input.activePointer;
 
     var tile = this.map.getTile(
@@ -95,16 +108,18 @@ class Game extends Phaser.State {
     console.log(tile);
 
 
-    this.marker.x = this.map.terrain.getTileX(pointer.worldX) * this.tileSize;
-    this.marker.y = this.map.terrain.getTileX(pointer.worldY) * this.tileSize;
+    this.cursor.updatePosition({
+      x: this.map.terrain.getTileX(pointer.worldX) * this.tileSize,
+      y: this.map.terrain.getTileX(pointer.worldY) * this.tileSize
+    });
 
     //TODO optimise
     if(tile && 'water' == tile.properties.tileType) {
-      this.marker.renderNoGo();
+      this.cursor.render('NoGo');
       return;
     }
 
-    this.marker.renderGo();
+    this.cursor.rander('go');
   }
 
   endGame() {

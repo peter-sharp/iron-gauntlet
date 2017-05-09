@@ -1,38 +1,63 @@
 //Documentation for Phaser's (2.6.2) sprites:: phaser.io/docs/2.6.2/Phaser.Graphics.html
-class Marker {
+export function marker(game, x, y, tileSize, displayStates) {
+    displayStates = displayStates || {};
 
-  //initialization code in the constructor
-  constructor(game, x, y, tileSize, color) {
+    var displayStateDefault = displayStates.default || {
+      color: 0x000000,
+      opacity: 0.2
+    };
 
-    this.graphic = game.add.graphics();
-    this.tileSize = tileSize;
-    this.color = color || 0x000000;
-    this.opacity = 0.2;
-    this.render();
+    state.graphic = game.add.graphics();
+    state.tileSize = tileSize;
+    state.color =  displayStateDefault.color;
+    state.opacity = displayStateDefault.opacity;
+    state.displayStates = displayStates;
+
+
+    /**
+     * updates the marker's color and opacity state from
+     * the displayState with the given name
+     * @param  {string} state [description]
+     */
+    function updateStateFromDisplayState(state) {
+      var selectedState = displayStates[state];
+      state.color = selectedState.color;
+      state.opacity = selectedState.opacity;
+    }
+
+    return {
+      /**
+       * renders the marker's color and opacity state from
+       * the displayState with the given name
+       * @param  {string} state [description]
+       */
+      render: function(displayState) {
+        updateStateFromDisplayState(displayState);
+        state.graphic.clear();
+        state.graphic.lineStyle(2, state.color, state.opacity);
+        state.graphic.drawRect(0, 0, state.tileSize, state.tileSize);
+      },
+
+
+      updatePosition: function(pos){
+
+        state.graphic.x = pos.x
+        state.graphic.y = pos.y
+      },
+
+
+      renderNoGo() {
+        this.opacity = 1;
+        this.color = 0xff0000;
+        this.render();
+      }
+
+      renderGo() {
+        this.opacity = 0.2;
+        this.color = 0x000000;
+        this.render();
+      }
   }
-
-  render() {
-    this.graphic.clear();
-    this.graphic.lineStyle(2, this.color, this.opacity);
-    this.graphic.drawRect(0, 0, this.tileSize, this.tileSize);
-  }
-
-  set x(value) { this.graphic.x = value}
-
-  set y(value) { this.graphic.y = value}
-
-  renderNoGo() {
-    this.opacity = 1;
-    this.color = 0xff0000;
-    this.render();
-  }
-
-  renderGo() {
-    this.opacity = 0.2;
-    this.color = 0x000000;
-    this.render();
-  }
-
 }
 
-export default Marker;
+export default marker;
