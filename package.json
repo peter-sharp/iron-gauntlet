@@ -17,6 +17,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "es6-object-assign": "^1.1.0",
     "phaser": "^2.6.2",
     "phaser-webpack-loader": "^1.0.0"
   },

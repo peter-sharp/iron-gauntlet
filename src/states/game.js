@@ -1,7 +1,7 @@
 import Crosshairs from '../prefabs/crosshairs';
 import Target from '../prefabs/target';
 import soldiers from '../prefabs/soldiers';
-import Marker from '../prefabs/marker';
+import marker from '../prefabs/marker';
 import Map from 'models/map';
 import {voronoiTilemap} from 'map/generators/voronoi';
 
@@ -74,6 +74,22 @@ class Game extends Phaser.State {
 
     this.cursor = marker(this.game, 0, 0, this.tileSize, cursorStates);
 
+
+    var selectorStates = {
+      Active: {
+        opacity: 1,
+        color: 0x00ff00
+
+      },
+
+      Off: {
+        opacity: 0,
+        color: 0x000000
+      }
+    }
+
+    this.selector = marker(this.game, 0, 0, this.tileSize, selectorStates);
+    
     this.game.input.addMoveCallback(this.updateCursor, this);
 
     var player1 = this.game.add.group();
@@ -119,7 +135,7 @@ class Game extends Phaser.State {
       return;
     }
 
-    this.cursor.rander('go');
+    this.cursor.render('Go');
   }
 
   endGame() {
