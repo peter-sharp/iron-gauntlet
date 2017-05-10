@@ -6,7 +6,7 @@ export function marker(game, x, y, tileSize, displayStates) {
       color: 0x000000,
       opacity: 0.2
     };
-
+    var state = {};
     state.graphic = game.add.graphics();
     state.tileSize = tileSize;
     state.color =  displayStateDefault.color;
@@ -19,8 +19,8 @@ export function marker(game, x, y, tileSize, displayStates) {
      * the displayState with the given name
      * @param  {string} state [description]
      */
-    function updateStateFromDisplayState(state) {
-      var selectedState = displayStates[state];
+    function updateStateFromDisplayState(stateName) {
+      var selectedState = displayStates[stateName];
       state.color = selectedState.color;
       state.opacity = selectedState.opacity;
     }
@@ -43,19 +43,6 @@ export function marker(game, x, y, tileSize, displayStates) {
 
         state.graphic.x = pos.x
         state.graphic.y = pos.y
-      },
-
-
-      renderNoGo() {
-        this.opacity = 1;
-        this.color = 0xff0000;
-        this.render();
-      }
-
-      renderGo() {
-        this.opacity = 0.2;
-        this.color = 0x000000;
-        this.render();
       }
   }
 }

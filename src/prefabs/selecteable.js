@@ -1,9 +1,15 @@
 export function selectable(state) {
   state.selected = state.selected || false;
+
+  state.events.onInputDown.add(function(){
+    state.selected = !state.selected;
+    console.log(state);
+  })
+
   return {
 
-    select: function () {},
+    select: function () { state.selected = true},
 
-    deselect: function() {}
+    deselect: function() { state.selected = false}
   }
 }

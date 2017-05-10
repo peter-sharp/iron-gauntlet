@@ -1,9 +1,11 @@
+import es6ObjectAssign from 'es6-object-assign';
 import Boot from './states/boot';
 import Game from './states/game';
 import Menu from './states/menu';
 import Preloader from './states/preloader';
 import Gameover from './states/gameover';
 
+es6ObjectAssign.polyfill();
 
 const game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, 'iron-gauntlet-game');
 const tileSize = 16;
