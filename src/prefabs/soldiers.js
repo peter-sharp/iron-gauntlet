@@ -4,12 +4,10 @@ import {selectable} from '../prefabs/selectable'
 function soldiers(game, x, y, player){
   var state = {};
   state.player = player;
-  state.sprite = player.create(x, y, 'soldiers');
-  state.events = {
-    onInputDown: {
-      add() {}
-    }
-  };
+  const worldX = mapX * map.tileWidth;
+  const worldY = mapY * map.tileHeight;
+  
+  state.sprite = player.create(worldX, worldY, 'soldiers');
   return Object.assign(
     {},
     selectable(state)

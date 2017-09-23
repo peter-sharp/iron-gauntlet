@@ -1,9 +1,14 @@
 import Crosshairs from '../prefabs/crosshairs';
 import Target from '../prefabs/target';
+import {locationRule} from '../prefabs/locationRule';
+import {locationFinder} from '../prefabs/behaviours/locationFinder';
+import {randomTileGetter} from '../prefabs/behaviours/randomTileGetter';
+import {selectorService} from '../prefabs/selectorService';
 import soldiers from '../prefabs/soldiers';
 import marker from '../prefabs/marker';
 import Map from 'models/map';
 import {voronoiTilemap} from 'map/generators/voronoi';
+
 
 class Game extends Phaser.State {
 
@@ -41,7 +46,10 @@ class Game extends Phaser.State {
       get water(){ return Math.random() < 0.99? 70 : this.game.rnd.pick([171,172]) }
     }
 
-
+    var locationRules = {
+      land: locationRule('land', {impassable:['water']}),
+      sea: locationRule('sea', {passable:['water']})
+    }
 
     this.map = this.game.add.tilemap(
         null,
@@ -49,8 +57,13 @@ class Game extends Phaser.State {
         this.tileSize,
         this.cols,
         this.rows
-      );
+    );
 
+    Object.assign(
+      this.map,
+      locationFinder(Phaser, this.game, this.map),
+      randomTileGetter(this.game, this.map)
+    );
 
     this.map.addTilesetImage('tiles_terrain');
 
@@ -74,27 +87,13 @@ class Game extends Phaser.State {
 
     this.cursor = marker(this.game, 0, 0, this.tileSize, cursorStates);
 
-
-    var selectorStates = {
-      Active: {
-        opacity: 1,
-        color: 0x00ff00
-
-      },
-
-      Off: {
-        opacity: 0,
-        color: 0x000000
-      }
-    }
-
-    this.selector = marker(this.game, 0, 0, this.tileSize, selectorStates);
-    
     this.game.input.addMoveCallback(this.updateCursor, this);
 
     var player1 = this.game.add.group();
 
-    soldiers(this.game, 32, 64, player1);
+    var soldierLoc = this.map.findRandomLocation(locationRules.land);
+
+    soldiers( this.map, soldierLoc.x, soldierLoc.y, player1);
 
   }
 
