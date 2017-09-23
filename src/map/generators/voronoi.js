@@ -1,5 +1,7 @@
 import Phaser from 'phaser';
 
+import {terrain} from 'prefabs/behaviours/terrain';  //TODO inject
+
 function _voronoiTilemapGenerator (game, map, maxPoints) {
   this.game = game;
   this.rows = map.height;
@@ -13,7 +15,7 @@ function _voronoiTilemapGenerator (game, map, maxPoints) {
 
 _voronoiTilemapGenerator.prototype = {
 
-  tileTypes: ['grass', 'dirt', 'water'],
+  terrainTypes: ['grass', 'dirt', 'water'],
 
   generate: function() {
     var points = _generateRandomPoints.call(this, this.maxPoints);
@@ -45,14 +47,17 @@ _voronoiTilemapGenerator.prototype = {
           }
         });
 
-        var tileType = nearestPoint? nearestPoint.tileType : 'water';
+        var terrainType = nearestPoint? nearestPoint.terrainType : 'water';
 
 
-        var tile = this.map.putTile(this.tileIds[tileType], x, y, this.map.terrain);
+        var tile = this.map.putTile(this.tileIds[terrainType], x, y, this.map.terrain);
         console.log('tile', tile);
-        
+
         if(tile) {
-          tile.properties.tileType = tileType;
+          Object.assign(
+            tile,
+            terrain(terrainType)
+          )
         }
       }
     }
@@ -62,6 +67,7 @@ _voronoiTilemapGenerator.prototype = {
   }
 }
 //creates a randomly positioned point object
+// TODO turn into behaviour
 function _getRandomPoint( tileSize) {
   return new Phaser.Point(
     Math.floor(this.game.world.randomX / tileSize),
@@ -70,7 +76,7 @@ function _getRandomPoint( tileSize) {
 }
 
 /**
- * creates randomly located points with a random tileType
+ * creates randomly located points with a random terrainType
  * @param  {[type]} maxPoints [description]
  * @return {[type]}           [description]
  */
@@ -81,7 +87,7 @@ function _generateRandomPoints( maxPoints) {
   for(var pointCount = 0; pointCount < maxPoints; pointCount += 1) {
     let point = _getRandomPoint.call(this, this.tileSize);
 
-    point.tileType = this.game.rnd.pick(this.tileTypes);
+    point.terrainType = this.game.rnd.pick(this.terrainTypes);
 
     console.log(point);
     points.push(point);
