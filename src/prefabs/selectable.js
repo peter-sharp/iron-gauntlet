@@ -1,14 +1,10 @@
-export function selectable( state) {
+export function selectable(state) {
   state.selected = state.selected || false;
 
-  state.sprite.inputEnabled = true;
-
-  state.sprite.events.onInputDown.add(function(){
-    
+  state.events.onInputDown.add(function(){
     state.selected = !state.selected;
-    debugger;
-  });
-
+    console.log(state);
+  })
 
   return {
 

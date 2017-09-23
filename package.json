@@ -3,10 +3,7 @@
   "version": "1.0.0",
   "description": "A modern military strategy game",
   "scripts": {
-    "start": "npm build && webpack-dev-server",
-    "prebuild": "mkdirp build",
-    "build": "webpack && npm run copy:html && npm run copy:all",
-    "build:js": "browserify -d -e src/main.js -t [babelify --comments false --presets es2015] | uglifyjs -cm > build/bundle.min.js",
+    "start": "webpack && node server.js",
     "build:css": "cleancss css/main.css -o build/main.min.css",
     "copy:html": "ncp index.html build/index.html",
     "copy:all": "npm run copy:assets && npm run copy:phaser",
@@ -19,7 +16,8 @@
   "dependencies": {
     "es6-object-assign": "^1.1.0",
     "phaser": "^2.6.2",
-    "phaser-webpack-loader": "^1.0.0"
+    "phaser-webpack-loader": "^1.0.2",
+    "express": "^4.15.4"
   },
   "devDependencies": {
     "babel": "^6.5.2",

@@ -30,17 +30,10 @@ class Preloader extends Phaser.State {
     // AssetManifest.audio.forEach((audio) => {
     //   this.game.load.audio(audio.split('.').shift(), `assets/audio/${audio}`);
     // });
-    this.game.load.image('background','assets/images/background.png');
-    this.game.load.image('soldiers','assets/sprites/soldiers.png');
-    this.game.load.image('tiles_terrain', 'assets/tilemaps/overworld.png');
-    this.game.load.image('crosshairs', 'assets/images/crosshairs.png');
-    this.game.load.image('text_go', 'assets/images/text_go.png');
-    this.game.load.image('text_ready', 'assets/images/text_ready.png');
-
-    this.game.load.spritesheet('target', 'assets/sprites/target.png',128.66,128);
-
-    this.game.load.audio('gunshot','assets/audio/gunshot.wav');
-    this.game.load.audio('ding','assets/audio/ding.wav');
+    
+    this.game.load.image('soldiers','https://cdn.glitch.com/db223ed2-fb4f-4f59-81c4-afead9dfe597%2Fsoldiers.png?1506132517778');
+    this.game.load.image('tiles_terrain', 'https://cdn.glitch.com/db223ed2-fb4f-4f59-81c4-afead9dfe597%2Foverworld.png?1506132499311');
+    
   }
 
   onLoadComplete() {
