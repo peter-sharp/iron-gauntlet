@@ -7,6 +7,8 @@ import Gameover from './states/gameover';
 
 es6ObjectAssign.polyfill();
 
+console.assert(Object.assign, 'failed asserting Object has assign method');
+
 const game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, 'iron-gauntlet-game');
 const tileSize = 16;
 const rows = Math.floor(window.innerHeight / tileSize);
