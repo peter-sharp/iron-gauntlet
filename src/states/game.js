@@ -1,9 +1,15 @@
+import Phaser from'phaser';
 import Crosshairs from '../prefabs/crosshairs';
 import Target from '../prefabs/target';
+import {locationRule} from '../prefabs/locationRule';
+import {locationFinder} from '../prefabs/behaviours/locationFinder';
+import {randomTileGetter} from '../prefabs/behaviours/randomTileGetter';
+import {selectorService} from '../prefabs/selectorService';
 import soldiers from '../prefabs/soldiers';
 import marker from '../prefabs/marker';
 import Map from 'models/map';
 import {voronoiTilemap} from 'map/generators/voronoi';
+
 
 class Game extends Phaser.State {
 
@@ -26,7 +32,7 @@ class Game extends Phaser.State {
     //set up click listeners
     // this.game.input.keyboard.addCallbacks(null, null, this.onKeyUp.bind(this));
 
-
+    var Selector = selectorService(this.game, this.tileSize, marker)
     //setup audio
     this.gunshot = this.game.add.audio('gunshot');
 
@@ -41,7 +47,10 @@ class Game extends Phaser.State {
       get water(){ return Math.random() < 0.99? 70 : this.game.rnd.pick([171,172]) }
     }
 
-
+    var locationRules = {
+      land: locationRule('land', {impassable:['water']}),
+      sea: locationRule('sea', {passable:['water']})
+    }
 
     this.map = this.game.add.tilemap(
         null,
@@ -49,15 +58,28 @@ class Game extends Phaser.State {
         this.tileSize,
         this.cols,
         this.rows
-      );
+    );
 
+    Object.assign(
+      this.map,
+      locationFinder(Phaser, this.game, this.map),
+      randomTileGetter(this.game, this.map)
+    );
 
     this.map.addTilesetImage('tiles_terrain');
 
 
     this.map.tileIds = tileIds;
-
-    voronoiTilemap(this.game, this.map);
+    
+    //	Progress report
+    const progressText = this.game.add.text(
+      this.game.world.height / 2, 
+      this.game.world.width / 2, 
+      '', 
+      { fill: '#ffffff' }
+    );
+    
+    voronoiTilemap(this.game, this.map, this.showProgress.bind(this, progressText));
 
     var cursorStates = {
       NoGo: {
@@ -74,27 +96,13 @@ class Game extends Phaser.State {
 
     this.cursor = marker(this.game, 0, 0, this.tileSize, cursorStates);
 
-
-    var selectorStates = {
-      Active: {
-        opacity: 1,
-        color: 0x00ff00
-
-      },
-
-      Off: {
-        opacity: 0,
-        color: 0x000000
-      }
-    }
-
-    this.selector = marker(this.game, 0, 0, this.tileSize, selectorStates);
-    
     this.game.input.addMoveCallback(this.updateCursor, this);
 
     var player1 = this.game.add.group();
 
-    soldiers(this.game, 32, 64, player1);
+    var soldierLoc = this.map.findRandomLocation(locationRules.land);
+
+    soldiers( this.map, soldierLoc, player1, Selector(soldierLoc));
 
   }
 
@@ -112,7 +120,11 @@ class Game extends Phaser.State {
   //   this.countdownText.setText( (this.endGameTimer.duration/1000).toFixed(1));
   // this.display.render();
   }
-
+  
+  showProgress(text, count, total, progress) {
+    text.setText(`generating map ${100 * progress}%`);
+  }
+  
   updateCursor() {
     var pointer = this.game.input.activePointer;
 

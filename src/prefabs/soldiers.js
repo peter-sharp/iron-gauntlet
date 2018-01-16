@@ -1,15 +1,13 @@
 import Phaser from 'phaser';
 import {selectable} from '../prefabs/selectable'
 //Documentation for Phaser's (2.6.2) sprites:: phaser.io/docs/2.6.2/Phaser.Sprite.html
-function soldiers(game, x, y, player){
+function soldiers(map, loc, player){
   var state = {};
   state.player = player;
-  state.sprite = player.create(x, y, 'soldiers');
-  state.events = {
-    onInputDown: {
-      add() {}
-    }
-  };
+  const worldX = loc.x * map.tileWidth;
+  const worldY = loc.y * map.tileHeight;
+  
+  state.sprite = player.create(worldX, worldY, 'soldiers');
   return Object.assign(
     {},
     selectable(state)
