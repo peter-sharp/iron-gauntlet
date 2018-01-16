@@ -7,6 +7,7 @@ export function marker(game, x, y, tileSize, displayStates) {
       opacity: 0.2
     };
     var state = {};
+    debugger
     state.graphic = game.add.graphics();
     state.tileSize = tileSize;
     state.color =  displayStateDefault.color;

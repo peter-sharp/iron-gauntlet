@@ -1,3 +1,4 @@
+import Phaser from'phaser';
 import Crosshairs from '../prefabs/crosshairs';
 import Target from '../prefabs/target';
 import {locationRule} from '../prefabs/locationRule';
@@ -31,7 +32,7 @@ class Game extends Phaser.State {
     //set up click listeners
     // this.game.input.keyboard.addCallbacks(null, null, this.onKeyUp.bind(this));
 
-
+    var Selector = selectorService(this.game, this.tileSize, marker)
     //setup audio
     this.gunshot = this.game.add.audio('gunshot');
 
@@ -69,8 +70,16 @@ class Game extends Phaser.State {
 
 
     this.map.tileIds = tileIds;
-
-    voronoiTilemap(this.game, this.map);
+    
+    //	Progress report
+    const progressText = this.game.add.text(
+      this.game.world.height / 2, 
+      this.game.world.width / 2, 
+      '', 
+      { fill: '#ffffff' }
+    );
+    
+    voronoiTilemap(this.game, this.map, this.showProgress.bind(this, progressText));
 
     var cursorStates = {
       NoGo: {
@@ -93,7 +102,9 @@ class Game extends Phaser.State {
 
     var soldierLoc = this.map.findRandomLocation(locationRules.land);
 
-    soldiers( this.map, soldierLoc.x, soldierLoc.y, player1);
+
+    soldiers( this.map, soldierLoc, player1, Selector(soldierLoc));
+
 
   }
 
@@ -111,7 +122,11 @@ class Game extends Phaser.State {
   //   this.countdownText.setText( (this.endGameTimer.duration/1000).toFixed(1));
   // this.display.render();
   }
-
+  
+  showProgress(text, count, total, progress) {
+    text.setText(`generating map ${100 * progress}%`);
+  }
+  
   updateCursor() {
     var pointer = this.game.input.activePointer;
 

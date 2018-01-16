@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 8);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -74,6 +74,67 @@ module.exports = Phaser;
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.marker = marker;
+//Documentation for Phaser's (2.6.2) sprites:: phaser.io/docs/2.6.2/Phaser.Graphics.html
+function marker(game, x, y, tileSize, displayStates) {
+  displayStates = displayStates || {};
+
+  var displayStateDefault = displayStates.default || {
+    color: 0x000000,
+    opacity: 0.2
+  };
+  var state = {};
+  debugger;
+  state.graphic = game.add.graphics();
+  state.tileSize = tileSize;
+  state.color = displayStateDefault.color;
+  state.opacity = displayStateDefault.opacity;
+  state.displayStates = displayStates;
+
+  /**
+   * updates the marker's color and opacity state from
+   * the displayState with the given name
+   * @param  {string} state [description]
+   */
+  function updateStateFromDisplayState(stateName) {
+    var selectedState = displayStates[stateName];
+    state.color = selectedState.color;
+    state.opacity = selectedState.opacity;
+  }
+
+  return {
+    /**
+     * renders the marker's color and opacity state from
+     * the displayState with the given name
+     * @param  {string} state [description]
+     */
+    render: function render(displayState) {
+      updateStateFromDisplayState(displayState);
+      state.graphic.clear();
+      state.graphic.lineStyle(2, state.color, state.opacity);
+      state.graphic.drawRect(0, 0, state.tileSize, state.tileSize);
+    },
+
+    updatePosition: function updatePosition(pos) {
+
+      state.graphic.x = pos.x;
+      state.graphic.y = pos.y;
+    }
+  };
+}
+
+exports.default = marker;
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -103,7 +164,8 @@ var Boot = function (_Phaser$State) {
   _createClass(Boot, [{
     key: 'preload',
     value: function preload() {
-      this.load.image('preloader', 'assets/images/preloader.gif');
+      this.load.crossOrigin = "Anonymous";
+      this.load.image('preloader', 'https://cdn.glitch.com/db223ed2-fb4f-4f59-81c4-afead9dfe597%2Fpreloader.gif?1506144283499');
     }
   }, {
     key: 'create',
@@ -141,7 +203,7 @@ var Boot = function (_Phaser$State) {
 exports.default = Boot;
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -153,27 +215,39 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _crosshairs = __webpack_require__(11);
+var _phaser = __webpack_require__(0);
+
+var _phaser2 = _interopRequireDefault(_phaser);
+
+var _crosshairs = __webpack_require__(14);
 
 var _crosshairs2 = _interopRequireDefault(_crosshairs);
 
-var _target = __webpack_require__(15);
+var _target = __webpack_require__(19);
 
 var _target2 = _interopRequireDefault(_target);
 
-var _soldiers = __webpack_require__(14);
+var _locationRule = __webpack_require__(15);
+
+var _locationFinder = __webpack_require__(12);
+
+var _randomTileGetter = __webpack_require__(13);
+
+var _selectorService = __webpack_require__(17);
+
+var _soldiers = __webpack_require__(18);
 
 var _soldiers2 = _interopRequireDefault(_soldiers);
 
-var _marker = __webpack_require__(12);
+var _marker = __webpack_require__(1);
 
 var _marker2 = _interopRequireDefault(_marker);
 
-var _map = __webpack_require__(10);
+var _map = __webpack_require__(11);
 
 var _map2 = _interopRequireDefault(_map);
 
-var _voronoi = __webpack_require__(9);
+var _voronoi = __webpack_require__(10);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -209,7 +283,7 @@ var Game = function (_Phaser$State) {
       //set up click listeners
       // this.game.input.keyboard.addCallbacks(null, null, this.onKeyUp.bind(this));
 
-
+      var Selector = (0, _selectorService.selectorService)(this.game, this.tileSize, _marker2.default);
       //setup audio
       this.gunshot = this.game.add.audio('gunshot');
 
@@ -230,13 +304,23 @@ var Game = function (_Phaser$State) {
         }
       };
 
+      var locationRules = {
+        land: (0, _locationRule.locationRule)('land', { impassable: ['water'] }),
+        sea: (0, _locationRule.locationRule)('sea', { passable: ['water'] })
+      };
+
       this.map = this.game.add.tilemap(null, this.tileSize, this.tileSize, this.cols, this.rows);
+
+      Object.assign(this.map, (0, _locationFinder.locationFinder)(_phaser2.default, this.game, this.map), (0, _randomTileGetter.randomTileGetter)(this.game, this.map));
 
       this.map.addTilesetImage('tiles_terrain');
 
       this.map.tileIds = tileIds;
 
-      (0, _voronoi.voronoiTilemap)(this.game, this.map);
+      //	Progress report
+      var progressText = this.game.add.text(this.game.world.height / 2, this.game.world.width / 2, '', { fill: '#ffffff' });
+
+      (0, _voronoi.voronoiTilemap)(this.game, this.map, this.showProgress.bind(this, progressText));
 
       var cursorStates = {
         NoGo: {
@@ -253,26 +337,13 @@ var Game = function (_Phaser$State) {
 
       this.cursor = (0, _marker2.default)(this.game, 0, 0, this.tileSize, cursorStates);
 
-      var selectorStates = {
-        Active: {
-          opacity: 1,
-          color: 0x00ff00
-
-        },
-
-        Off: {
-          opacity: 0,
-          color: 0x000000
-        }
-      };
-
-      this.selector = (0, _marker2.default)(this.game, 0, 0, this.tileSize, selectorStates);
-
       this.game.input.addMoveCallback(this.updateCursor, this);
 
       var player1 = this.game.add.group();
 
-      (0, _soldiers2.default)(this.game, 32, 64, player1);
+      var soldierLoc = this.map.findRandomLocation(locationRules.land);
+
+      (0, _soldiers2.default)(this.map, soldierLoc, player1, Selector(soldierLoc));
     }
 
     // onKeyUp(event) {
@@ -290,6 +361,11 @@ var Game = function (_Phaser$State) {
     value: function update() {
       //   this.countdownText.setText( (this.endGameTimer.duration/1000).toFixed(1));
       // this.display.render();
+    }
+  }, {
+    key: 'showProgress',
+    value: function showProgress(text, count, total, progress) {
+      text.setText('generating map ' + 100 * progress + '%');
     }
   }, {
     key: 'updateCursor',
@@ -320,12 +396,12 @@ var Game = function (_Phaser$State) {
   }]);
 
   return Game;
-}(Phaser.State);
+}(_phaser2.default.State);
 
 exports.default = Game;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -408,7 +484,7 @@ var Menu = function (_Phaser$State) {
 exports.default = Menu;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -444,12 +520,12 @@ var Menu = function (_Phaser$State) {
       this.background.width = this.game.world.width;
 
       //add some fancy transition effects
-      this.ready = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'text_ready');
-      this.ready.anchor.set(0.5, 0.5);
-      this.ready.visible = false;
-      this.go = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'text_go');
-      this.go.anchor.set(0.5, 0.5);
-      this.go.visible = false;
+      // this.ready = this.game.add.sprite(this.game.world.centerX,this.game.world.centerY,'text_ready');
+      // this.ready.anchor.set(0.5,0.5);
+      // this.ready.visible=false;
+      // this.go = this.game.add.sprite(this.game.world.centerX,this.game.world.centerY,'text_go');
+      // this.go.anchor.set(0.5,0.5);
+      // this.go.visible=false;
 
       //add intro text
       this.menuText = this.add.text(this.game.world.centerX, this.game.world.centerY, 'Click to play', {
@@ -475,39 +551,43 @@ var Menu = function (_Phaser$State) {
       }
 
       this.canContinueToNextState = false;
-      this.ready.visible = true;
+      // this.ready.visible = true;
       this.menuText.visible = false;
-      this.go.angle = -15;
+      // this.go.angle = -15;
 
       //create some tweens - http://phaser.io/docs/2.6.2/Phaser.Tween.html#to
-      var ready_tween = this.game.add.tween(this.ready.scale).to({ x: 1.5, y: 1.5 }, 500, Phaser.Easing.Linear.In, false, 0, -1, true);
+      //     const ready_tween = this.game.add.tween(this.ready.scale)
+      //       .to({ x: 1.5, y: 1.5}, 500, Phaser.Easing.Linear.In,false,0,-1,true);
 
-      var go_tween = this.game.add.tween(this.go).to({ angle: 15 }, 200, Phaser.Easing.Linear.In, false, 0, -1, true);
+      //     const go_tween = this.game.add.tween(this.go)
+      //       .to({ angle: 15}, 200, Phaser.Easing.Linear.In,false,0,-1,true);
 
       //when the 'ready' tween is done, hide it and show 'go'. perform a shaking/rotating tween on 'go'. When 'go' is done, start the game
-      var go_tween_repeat_num = 3; //how many times these tweens should loop
-      var ready_tween_repeat_num = 3;
+      //     var go_tween_repeat_num = 3; //how many times these tweens should loop
+      //     var ready_tween_repeat_num = 3;
 
-      var go_tween_loop = function go_tween_loop() {
-        go_tween_repeat_num -= 0.5;
-        if (go_tween_repeat_num < 1) {
-          this.go.visible = false;
-          this.game.state.start('game');
-        }
-      };
-      var ready_tween_loop = function ready_tween_loop() {
-        ready_tween_repeat_num -= 0.5;
-        if (ready_tween_repeat_num < 1) {
-          this.ready.visible = false;
-          this.go.visible = true;
+      //     const go_tween_loop = function(){
+      //       go_tween_repeat_num -= 0.5;
+      //       if(go_tween_repeat_num < 1){
+      //         this.go.visible = false;
+      //         this.game.state.start('game');
+      //       }
+      //     };
+      //     const ready_tween_loop = function(){
+      //       ready_tween_repeat_num -= 0.5;
+      //       if(ready_tween_repeat_num < 1){
+      //         this.ready.visible = false;
+      //         this.go.visible = true;
 
-          go_tween.start();
-        }
-      };
-      ready_tween.onLoop.add(ready_tween_loop, this);
-      go_tween.onLoop.add(go_tween_loop, this);
+      //         go_tween.start();
+      //       }
+      //     };
+      //     ready_tween.onLoop.add(ready_tween_loop, this);
+      //     go_tween.onLoop.add(go_tween_loop, this);
 
-      ready_tween.start();
+
+      //     ready_tween.start();
+      this.game.state.start('game');
     }
   }]);
 
@@ -517,7 +597,7 @@ var Menu = function (_Phaser$State) {
 exports.default = Menu;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -529,7 +609,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _AssetManifest = __webpack_require__(7);
+var _AssetManifest = __webpack_require__(8);
 
 var _AssetManifest2 = _interopRequireDefault(_AssetManifest);
 
@@ -569,19 +649,20 @@ var Preloader = function (_Phaser$State) {
     key: 'loadResources',
     value: function loadResources() {
 
-      // AssetManifest.images.forEach((image) => {
-      //   var name = image.split('.').shift();
-      //   this.game.load.image(name, `assets/images/${image}`);
-      // });
-      //
-      // this.game.load.spritesheet('target', 'assets/sprites/target.png',128.66,128);
-      //
-      // AssetManifest.audio.forEach((audio) => {
-      //   this.game.load.audio(audio.split('.').shift(), `assets/audio/${audio}`);
-      // });
+      //     AssetManifest.images.forEach((image) => {
+      //       var name = image.split('.').shift();
+      //       this.game.load.image(name, `assets/images/${image}`);
+      //     });
 
+      //     this.game.load.spritesheet('target', 'assets/sprites/target.png',128.66,128);
+
+      //     AssetManifest.audio.forEach((audio) => {
+      //       this.game.load.audio(audio.split('.').shift(), `assets/audio/${audio}`);
+      //     });
+      this.game.load.crossOrigin = "Anonymous";
       this.game.load.image('soldiers', 'https://cdn.glitch.com/db223ed2-fb4f-4f59-81c4-afead9dfe597%2Fsoldiers.png?1506132517778');
       this.game.load.image('tiles_terrain', 'https://cdn.glitch.com/db223ed2-fb4f-4f59-81c4-afead9dfe597%2Foverworld.png?1506132499311');
+      this.game.load.image('background', 'https://openclipart.org/image/800px/svg_to_png/202018/cammo.png');
     }
   }, {
     key: 'onLoadComplete',
@@ -596,7 +677,7 @@ var Preloader = function (_Phaser$State) {
 exports.default = Preloader;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -649,7 +730,7 @@ module.exports = {
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -668,33 +749,33 @@ var AssetManifest = {
 exports.default = AssetManifest;
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _es6ObjectAssign = __webpack_require__(6);
+var _es6ObjectAssign = __webpack_require__(7);
 
 var _es6ObjectAssign2 = _interopRequireDefault(_es6ObjectAssign);
 
-var _boot = __webpack_require__(1);
+var _boot = __webpack_require__(2);
 
 var _boot2 = _interopRequireDefault(_boot);
 
-var _game = __webpack_require__(2);
+var _game = __webpack_require__(3);
 
 var _game2 = _interopRequireDefault(_game);
 
-var _menu = __webpack_require__(4);
+var _menu = __webpack_require__(5);
 
 var _menu2 = _interopRequireDefault(_menu);
 
-var _preloader = __webpack_require__(5);
+var _preloader = __webpack_require__(6);
 
 var _preloader2 = _interopRequireDefault(_preloader);
 
-var _gameover = __webpack_require__(3);
+var _gameover = __webpack_require__(4);
 
 var _gameover2 = _interopRequireDefault(_gameover);
 
@@ -716,7 +797,7 @@ game.state.add('gameover', new _gameover2.default());
 game.state.start('boot');
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -733,13 +814,14 @@ var _phaser2 = _interopRequireDefault(_phaser);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _voronoiTilemapGenerator(game, map, maxPoints) {
+function _voronoiTilemapGenerator(game, map, progressCb, maxPoints) {
   this.game = game;
   this.rows = map.height;
   this.cols = map.width;
   this.tileIds = map.tileIds;
   this.tileSize = map.tileWidth;
   this.maxPoints = maxPoints || map.height + map.width / 4;
+  this.progressCb = progressCb;
   this.map = map;
   this.generate();
 }
@@ -755,28 +837,15 @@ _voronoiTilemapGenerator.prototype = {
 
     this.map.terrain.resizeWorld();
 
+    // for progress cb
+    var tileProgress = 0;
+    var tilesTotal = this.cols * this.rows;
+
     // get ground layer
     for (var x = 0; x < this.map.width; x += 1) {
       for (var y = 0; y < this.map.width; y += 1) {
-        var closest = Infinity;
-        var nearestPoint;
-        points.forEach(function (point) {
-          var coords = { x: x, y: y };
 
-          var distance = point.distance(coords, true);
-
-          if (point.equals(coords)) {
-            nearestPoint = point;
-            closest = 0;
-            return;
-          }
-
-          if (distance < closest) {
-            closest = distance;
-            nearestPoint = point;
-          }
-        });
-
+        var nearestPoint = findNearestPoint(points, { x: x, y: y });
         var tileType = nearestPoint ? nearestPoint.tileType : 'water';
 
         var tile = this.map.putTile(this.tileIds[tileType], x, y, this.map.terrain);
@@ -785,6 +854,8 @@ _voronoiTilemapGenerator.prototype = {
         if (tile) {
           tile.properties.tileType = tileType;
         }
+        tileProgress += 1;
+        this.progressCb(tileProgress, tilesTotal, tileProgress / tilesTotal);
       }
     }
   }
@@ -813,13 +884,56 @@ function _generateRandomPoints(maxPoints) {
   return points;
 }
 
-function voronoiTilemap(game, map, maxPoints) {
+function voronoiTilemap(game, map, progressCb, maxPoints) {
 
-  new _voronoiTilemapGenerator(game, map, maxPoints);
+  return new _voronoiTilemapGenerator(game, map, progressCb, maxPoints);
+}
+
+function findNearestPoint(points, coords) {
+  var closest = Infinity;
+  var nearestPoint;
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
+
+  try {
+    for (var _iterator = points[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var point = _step.value;
+
+
+      var distance = point.distance(coords, true);
+
+      if (point.equals(coords)) {
+        nearestPoint = point;
+        closest = 0;
+        return nearestPoint;
+      }
+
+      if (distance < closest) {
+        closest = distance;
+        nearestPoint = point;
+      }
+    }
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator.return) {
+        _iterator.return();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
+    }
+  }
+
+  return nearestPoint;
 }
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -851,7 +965,63 @@ var Map = function Map(rows, cols) {
 exports.default = Map;
 
 /***/ }),
-/* 11 */
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.locationFinder = locationFinder;
+function locationFinder(Phaser, game, map) {
+
+  function findLocation(type) {
+    var tile = map.getRandomTile('terrain');
+
+    if (tile && type.isPassable(tile)) {
+      return new Phaser.Point(tile.x, tile.y);
+    }
+
+    return findLocation(type);
+  }
+
+  return {
+    /**
+     * finds a valid random location for the given unit type
+     * @param  {locationRule|moveable} forType type or moveable to find loaction for
+     * @return {Phaser.Point}    random location on the board valid for given type
+     */
+    findRandomLocation: function findRandomLocation(forType) {
+      return findLocation(forType);
+    }
+  };
+}
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.randomTileGetter = randomTileGetter;
+function randomTileGetter(game, map) {
+  return {
+    getRandomTile: function getRandomTile(layer) {
+      var x = Math.floor((game.world.randomX - map.tileWidth) / map.tileWidth);
+      var y = Math.floor((game.world.randomY - map.tileHeight) / map.tileHeight);
+      return map.getTile(x, y, layer);
+    }
+  };
+}
+
+/***/ }),
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -901,7 +1071,7 @@ var Crosshairs = function (_Phaser$Sprite) {
 exports.default = Crosshairs;
 
 /***/ }),
-/* 12 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -910,58 +1080,51 @@ exports.default = Crosshairs;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.marker = marker;
-//Documentation for Phaser's (2.6.2) sprites:: phaser.io/docs/2.6.2/Phaser.Graphics.html
-function marker(game, x, y, tileSize, displayStates) {
-  displayStates = displayStates || {};
-
-  var displayStateDefault = displayStates.default || {
-    color: 0x000000,
-    opacity: 0.2
-  };
+exports.locationRule = locationRule;
+/**
+ * creats a location rule object
+ * @param  {[type]} typeName    [description]
+ * @param  {[type]} permissions [description]
+ * @return {Object}             [description]
+ */
+function locationRule(typeName, permissions) {
+  permissions = permissions || {};
   var state = {};
-  state.graphic = game.add.graphics();
-  state.tileSize = tileSize;
-  state.color = displayStateDefault.color;
-  state.opacity = displayStateDefault.opacity;
-  state.displayStates = displayStates;
-
-  /**
-   * updates the marker's color and opacity state from
-   * the displayState with the given name
-   * @param  {string} state [description]
-   */
-  function updateStateFromDisplayState(stateName) {
-    var selectedState = displayStates[stateName];
-    state.color = selectedState.color;
-    state.opacity = selectedState.opacity;
-  }
+  state.passable = permissions.passable;
+  state.impassable = permissions.impassable;
 
   return {
+
     /**
-     * renders the marker's color and opacity state from
-     * the displayState with the given name
-     * @param  {string} state [description]
+     * checks if the given location rule can be put on the given tile
+     * @param  {[type]} type [description]
+     * @param  {[type]} tile [description]
+     * @return {[type]}      [description]
      */
-    render: function render(displayState) {
-      updateStateFromDisplayState(displayState);
-      state.graphic.clear();
-      state.graphic.lineStyle(2, state.color, state.opacity);
-      state.graphic.drawRect(0, 0, state.tileSize, state.tileSize);
-    },
+    isPassable: function isPassable(tile) {
 
-    updatePosition: function updatePosition(pos) {
+      if (state.impassable && state.impassable.indexOf(tile.terrainType) > -1) {
+        return false;
+      }
 
-      state.graphic.x = pos.x;
-      state.graphic.y = pos.y;
+      if (state.passable && state.passable.indexOf(tile.terrainType) > -1) {
+        return true;
+      }
+
+      // all others are false
+      if (state.passable) return false;
+
+      // all others are true
+      if (state.impassable) return true;
+
+      // can be put on all terrain
+      return true;
     }
   };
 }
 
-exports.default = marker;
-
 /***/ }),
-/* 13 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -971,13 +1134,27 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.selectable = selectable;
+
+var _marker = __webpack_require__(1);
+
+var _marker2 = _interopRequireDefault(_marker);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function selectable(state) {
   state.selected = state.selected || false;
 
-  state.events.onInputDown.add(function () {
+  var selector = (0, _marker2.default)();
+  state.sprite.inputEnabled = true;
+
+  state.sprite.events.onInputDown.add(function () {
+
     state.selected = !state.selected;
-    console.log(state);
   });
+
+  state.sprite.update = function () {};
+
+  window.soldier = state;
 
   return {
 
@@ -992,7 +1169,39 @@ function selectable(state) {
 }
 
 /***/ }),
-/* 14 */
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.selectorService = selectorService;
+function selectorService(game, tileSize, marker) {
+
+  var selectorStates = {
+    Active: {
+      opacity: 1,
+      color: 0x00ff00
+
+    },
+
+    Off: {
+      opacity: 0,
+      color: 0x000000
+    }
+  };
+
+  return function (loc) {
+
+    return marker(game, loc.x, loc.y, tileSize, selectorStates);
+  };
+}
+
+/***/ }),
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1006,27 +1215,25 @@ var _phaser = __webpack_require__(0);
 
 var _phaser2 = _interopRequireDefault(_phaser);
 
-var _selectable = __webpack_require__(13);
+var _selectable = __webpack_require__(16);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //Documentation for Phaser's (2.6.2) sprites:: phaser.io/docs/2.6.2/Phaser.Sprite.html
-function soldiers(game, x, y, player) {
+function soldiers(map, loc, player) {
   var state = {};
   state.player = player;
-  state.sprite = player.create(x, y, 'soldiers');
-  state.events = {
-    onInputDown: {
-      add: function add() {}
-    }
-  };
+  var worldX = loc.x * map.tileWidth;
+  var worldY = loc.y * map.tileHeight;
+
+  state.sprite = player.create(worldX, worldY, 'soldiers');
   return Object.assign({}, (0, _selectable.selectable)(state));
 }
 
 exports.default = soldiers;
 
 /***/ }),
-/* 15 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1103,3 +1310,4 @@ exports.default = Target;
 
 /***/ })
 /******/ ]);
+//# sourceMappingURL=bundle.js.map

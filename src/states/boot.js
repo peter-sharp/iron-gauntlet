@@ -6,7 +6,8 @@ class Boot extends Phaser.State {
   }
 
   preload() {
-    this.load.image('preloader', 'assets/images/preloader.gif');
+    this.load.crossOrigin = "Anonymous";
+    this.load.image('preloader', 'https://cdn.glitch.com/db223ed2-fb4f-4f59-81c4-afead9dfe597%2Fpreloader.gif?1506144283499');
   }
 
   create() {

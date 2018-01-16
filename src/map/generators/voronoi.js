@@ -1,12 +1,13 @@
 import Phaser from 'phaser';
 
-function _voronoiTilemapGenerator (game, map, maxPoints) {
+function _voronoiTilemapGenerator (game, map, progressCb, maxPoints) {
   this.game = game;
   this.rows = map.height;
   this.cols = map.width;
   this.tileIds = map.tileIds;
   this.tileSize = map.tileWidth;
   this.maxPoints = maxPoints || map.height + map.width / 4;
+  this.progressCb = progressCb;
   this.map = map;
   this.generate();
 }
@@ -21,30 +22,16 @@ _voronoiTilemapGenerator.prototype = {
     this.map.terrain = this.map.create('terrain', this.cols ,this.rows, this.tileSize, this.tileSize);
 
     this.map.terrain.resizeWorld();
-
-
+    
+    // for progress cb
+    var tileProgress = 0;
+    const tilesTotal = this.cols * this.rows;
+    
     // get ground layer
     for(var x = 0; x < this.map.width; x += 1){
       for(var y = 0; y < this.map.width; y += 1){
-        var closest = Infinity;
-        var nearestPoint;
-        points.forEach((point) => {
-          var coords = {x: x, y: y};
-
-          var distance = point.distance(coords, true);
-
-          if(point.equals(coords)){
-            nearestPoint = point;
-            closest = 0;
-            return;
-          }
-
-          if( distance < closest){
-            closest = distance;
-            nearestPoint = point;
-          }
-        });
-
+        
+        const nearestPoint = findNearestPoint(points, {x: x, y: y});
         var tileType = nearestPoint? nearestPoint.tileType : 'water';
 
 
@@ -54,6 +41,8 @@ _voronoiTilemapGenerator.prototype = {
         if(tile) {
           tile.properties.tileType = tileType;
         }
+        tileProgress +=1;
+        this.progressCb(tileProgress, tilesTotal, tileProgress/tilesTotal);
       }
     }
 
@@ -89,7 +78,32 @@ function _generateRandomPoints( maxPoints) {
   return points;
 }
 
-export function voronoiTilemap(game, map, maxPoints) {
 
-  new _voronoiTilemapGenerator(game, map, maxPoints);
+
+export function voronoiTilemap(game, map, progressCb, maxPoints) {
+
+  return new _voronoiTilemapGenerator(game, map, progressCb, maxPoints);
+}
+
+
+function findNearestPoint(points, coords){
+  var closest = Infinity;
+  var nearestPoint;
+  for (let point of points){
+
+    var distance = point.distance(coords, true);
+
+    if(point.equals(coords)){
+      nearestPoint = point;
+      closest = 0;
+      return nearestPoint;
+    }
+
+    if( distance < closest){
+      closest = distance;
+      nearestPoint = point;
+    }
+  }
+  
+  return nearestPoint;
 }

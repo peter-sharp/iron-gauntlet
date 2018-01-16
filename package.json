@@ -17,7 +17,8 @@
     "es6-object-assign": "^1.1.0",
     "phaser": "^2.6.2",
     "phaser-webpack-loader": "^1.0.2",
-    "express": "^4.15.4"
+    "express": "^4.15.4",
+    "bottlejs": "^1.6.1"
   },
   "devDependencies": {
     "babel": "^6.5.2",
