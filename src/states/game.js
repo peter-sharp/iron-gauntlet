@@ -102,7 +102,9 @@ class Game extends Phaser.State {
 
     var soldierLoc = this.map.findRandomLocation(locationRules.land);
 
+
     soldiers( this.map, soldierLoc, player1, Selector(soldierLoc));
+
 
   }
 

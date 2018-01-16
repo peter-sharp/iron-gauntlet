@@ -4,8 +4,10 @@ import {selectable} from '../prefabs/selectable'
 function soldiers(map, loc, player){
   var state = {};
   state.player = player;
+
   const worldX = loc.x * map.tileWidth;
   const worldY = loc.y * map.tileHeight;
+
   
   state.sprite = player.create(worldX, worldY, 'soldiers');
   return Object.assign(

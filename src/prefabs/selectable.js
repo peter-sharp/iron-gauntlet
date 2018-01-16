@@ -2,8 +2,10 @@ import marker from '../prefabs/marker';
 export function selectable(state) {
   state.selected = state.selected || false;
 
+
   const selector = marker();
   state.sprite.inputEnabled = true;
+
 
   state.sprite.events.onInputDown.add(function(){
     

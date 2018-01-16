@@ -13,8 +13,10 @@ export function selectorService(game, tileSize, marker) {
     }
   };
 
+
   return function(loc) {
 
     return marker(game, loc.x, loc.y, tileSize, selectorStates);
+
   }
 }
