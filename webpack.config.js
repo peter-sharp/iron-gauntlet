@@ -1,16 +1,13 @@
 var path = require('path');
 
 module.exports = {
-  entry: './src/main.js',
+  entry: './src',
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'public')
   },
   resolve:{
     modules: [path.resolve(__dirname, "src"), "node_modules", path.resolve(__dirname, "assets")]
-  },
-  externals: {
-    phaser: "Phaser"
   },
   module: {
     rules: [
@@ -23,5 +20,6 @@ module.exports = {
         }]
       }
     ]
-  }
+  },
+  devtool: 'source-map'
 }
