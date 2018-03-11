@@ -2,19 +2,22 @@ import Choo from 'choo'
 import partial from 'lodash/fp/partial'
 import tinycolor from 'tinycolor2'
 import mapStore from './mapStore'
+import gameStore from './gameStore'
 import assetStore from './assetStore'
-import renderMap from './renderMap'
 import {mainView} from './views'
+import {gameSelectionView} from './views'
 import {setupMenuView} from './views'
 
 const app = Choo()
 
 app.use(playerStore)
 
+app.use(gameStore)
 app.use(assetStore)
 app.use(mapStore)
 
-app.route('/', partial(mainView, [setupMenuView]))
+app.route('/', partial(mainView, [gameSelectionView]))
+app.route('/games/:game', partial(mainView, [setupMenuView]))
 
 const MAX_PLAYERS = 8
 const MIN_PLAYERS = 2

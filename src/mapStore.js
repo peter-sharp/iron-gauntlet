@@ -1,5 +1,6 @@
 import Map from './map';
 import generateVoronoiMap from './voronoiMapGenerator'
+import {CanvasComponent} from './CanvasComponent'
 
 import partial from 'lodash/fp/partial'
 import TerrainType from './TerrainType'
@@ -20,7 +21,7 @@ export function mapStore (state, events) {
 
   var generator = partial(generateVoronoiMap, [state.terrainTypes, 'water'])
   state.mapOptions = makeMapOptions(generator, state.mapOptCount, {cols: state.mapCols, rows: state.mapRows})
-
+  state.mapCanvases = createMapCanvases(state.mapOptions)
 }
 
 function makeMapOptions(generator, count, size) {
@@ -34,6 +35,13 @@ function makeMapOptions(generator, count, size) {
 function makeMapOption(generator, {cols, rows}){
   var map = Map({cols, rows})
   return generator(map);
+}
+
+function createMapCanvases(mapOptions) {
+  return mapOptions.reduce((canvases, map) => {
+    canvases[map.id] = CanvasComponent()
+    return canvases
+  }, {})
 }
 
 export default mapStore

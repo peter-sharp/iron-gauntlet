@@ -8,7 +8,6 @@ export default function assetStore(state, events) {
     'assets/images/soldiers.svg'
   ])
   .then((imgs) => {
-    debugger
     state.images = imgs
     events.emit(state.events.RENDER)
   })

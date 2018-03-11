@@ -1,6 +1,6 @@
 import uniqueId from 'lodash/fp/uniqueId'
 
-export function Map({cols = 10, rows = 10, tsize = 48, tiles = []} = {}) {
+export function Map({cols = 20, rows = 20, tsize = 48, tiles = []} = {}) {
   if(!this) return new Map({})
   this.id = uniqueId('map_')
   this.cols = cols
@@ -43,7 +43,7 @@ Map.each = (fn, map) => {
   }
 }
 
-Map.getTile = (row, col, map) => row * map.cols + col
+Map.getTile = (row, col, map) => map.tiles[row * map.cols + col]
 
 Map.getRndTileVect = (map) => [Math.floor(map.cols * Math.random()), Math.floor(map.rows * Math.random())]
 

@@ -7,7 +7,7 @@ export function loadImage(src) {
   var img = new Image()
 
   var d = new Promise(function handlePromise(res, rej) {
-    img.onload = partial(res, [img])
+    img.onload = partial(res, [{src, img}])
 
     img.onerror = partial(rej, [`Could not load image: ${src}`])
   })
@@ -24,9 +24,9 @@ export function loadImages(srcs) {
 }
 
 
-var indexBy = curry(function (key, acc, obj) {
-  acc[obj[key]] = obj
+var indexBy = curry(function (key, val, acc, obj) {
+  acc[obj[key]] = val ? obj[val] : obj
   return acc
 })
 
-var reduceBySrc = partial(reduce, [indexBy('src'), {}])
+var reduceBySrc = partial(reduce, [indexBy('src', 'img'), {}])
