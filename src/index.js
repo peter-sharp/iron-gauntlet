@@ -1,5 +1,6 @@
 import Choo from 'choo'
 import partial from 'lodash/fp/partial'
+import io from 'socket.io-client'
 import tinycolor from 'tinycolor2'
 import mapStore from './mapStore'
 import gameStore from './gameStore'
@@ -8,11 +9,12 @@ import {mainView} from './views'
 import {gameSelectionView} from './views'
 import {setupMenuView} from './views'
 
+const socket = io()
 const app = Choo()
 
 app.use(playerStore)
 
-app.use(gameStore)
+app.use(partial(gameStore, [socket]))
 app.use(assetStore)
 app.use(mapStore)
 
@@ -60,4 +62,5 @@ function getDefaultColour(id){
 
 app.mount('.iron-gauntlet')
 
+// TODO hide during production
 window.ironGauntlet = app

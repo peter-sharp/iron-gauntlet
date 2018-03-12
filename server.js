@@ -1,8 +1,11 @@
-const playerStore = require('playerStore')
-const app = require('express')()
+const playerStore = require('./playerStore')
+const gameStore = require('./gameStore')
+const path = require('path')
+const uuid = require('uuid/v4');
+const express = require('express')
+const app = express()
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
-const path = require('path')
 const PORT = 8080
 
 app.use(express.static(path.join(__dirname, 'public')))
@@ -15,7 +18,15 @@ io.on('connection', socket => {
     // TODO remove player
     console.info('A player disconnected')
   });
+
+  socket.on('createGame', game => {
+    game.id = uuid()
+    gameStore.addGame(game)
+    socket.emit('gameCreated', game)
+  })
 })
+
+
 
 app.listen(PORT, () => {
   console.log(`iron gauntlet started on port ${PORT}`)

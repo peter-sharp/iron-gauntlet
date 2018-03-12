@@ -7,7 +7,8 @@
     "lodash-fp": "^0.10.4",
     "nanocomponent": "^6.5.0",
     "socketio": "^1.0.0",
-    "tinycolor2": "^1.4.1"
+    "tinycolor2": "^1.4.1",
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
     "babel": "^6.5.2",
