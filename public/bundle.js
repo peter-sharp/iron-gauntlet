@@ -4431,13 +4431,13 @@ var _socket = __webpack_require__(260);
 
 var _socket2 = _interopRequireDefault(_socket);
 
-var _tinycolor = __webpack_require__(292);
-
-var _tinycolor2 = _interopRequireDefault(_tinycolor);
-
 var _mapStore = __webpack_require__(293);
 
 var _mapStore2 = _interopRequireDefault(_mapStore);
+
+var _playerStore = __webpack_require__(336);
+
+var _playerStore2 = _interopRequireDefault(_playerStore);
 
 var _gameStore = __webpack_require__(319);
 
@@ -4454,7 +4454,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var socket = (0, _socket2.default)();
 var app = (0, _choo2.default)();
 
-app.use(playerStore);
+app.use(_playerStore2.default);
 
 app.use((0, _partial2.default)(_gameStore2.default, [socket]));
 app.use(_assetStore2.default);
@@ -4462,51 +4462,6 @@ app.use(_mapStore2.default);
 
 app.route('/', (0, _partial2.default)(_views.mainView, [_views.gameSelectionView]));
 app.route('/games/:game', (0, _partial2.default)(_views.mainView, [_views.setupMenuView]));
-
-var MAX_PLAYERS = 8;
-var MIN_PLAYERS = 2;
-
-function playerStore(state, events) {
-  state.events.SET_PLAYERS = 'setPlayers';
-  state.minPlayers = MIN_PLAYERS;
-  state.maxPlayers = MAX_PLAYERS;
-  state.playerCount = 2;
-  state.players = makePlayers(state.playerCount);
-  events.on(state.events.SET_PLAYERS, function (count) {
-    state.playerCount = count;
-    state.players = makePlayers(state.playerCount, state.players);
-
-    events.emit(state.events.RENDER);
-  });
-}
-
-function makePlayers(count) {
-  var players = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
-
-  players = players.slice(0, count);
-  for (var i = 0; i < count; i++) {
-    players[i] = makePlayer(Object.assign({ id: i }, players[i]));
-  }
-  return players;
-}
-
-function makePlayer(_ref) {
-  var id = _ref.id,
-      name = _ref.name,
-      colour = _ref.colour;
-
-  return {
-    id: id,
-    name: name || 'player ' + (id + 1),
-    colour: colour || getDefaultColour(id)
-  };
-}
-
-function getDefaultColour(id) {
-  var percent = (id + 0.1) / MAX_PLAYERS;
-  var colour = (0, _tinycolor2.default)({ h: percent * 255, s: 1, l: 0.5 });
-  return colour.toHex();
-}
 
 app.mount('.iron-gauntlet');
 
@@ -22299,7 +22254,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function gameStore(socket, state, events) {
   state.games = [];
-  var gamesIndexed = {};
+  state.gamesIndexed = {};
 
   state.events.ADD_GAME = 'addGame';
   state.events.CREATE_GAME = 'createGame';
@@ -22309,13 +22264,13 @@ function gameStore(socket, state, events) {
     socket.on(state.events.GAME_CREATED, function (game) {
 
       events.emit(state.events.ADD_GAME, game);
+      events.emit(state.events.PUSHSTATE, '/games/' + game.id);
     });
   });
 
   events.on(state.events.ADD_GAME, function (game) {
-    games.push(game);
-    gamesIndexed[game.id] = game;
-    events.emit(state.events.RENDER);
+    state.games.push(game);
+    state.gamesIndexed[game.id] = game;
   });
 }
 exports.default = gameStore;
@@ -22335,6 +22290,7 @@ function game() {
   this.id = null;
   this.players = [];
   this.map = null;
+  this.maxPlayers = 2;
 }
 
 exports.default = game;
@@ -22752,7 +22708,7 @@ Object.defineProperty(exports, "__esModule", {
 var _templateObject = _taggedTemplateLiteral(['<main>\n                <h1>Iron Gauntlet</h1>\n                ', '\n              </main>'], ['<main>\n                <h1>Iron Gauntlet</h1>\n                ', '\n              </main>']),
     _templateObject2 = _taggedTemplateLiteral(['<ul class="edit-list">\n                <li class="edit-list__item--add">\n                  <button class="edit-list__add-symbol" onclick=', '>+</button>\n                </li>\n                ', '\n              </ul>'], ['<ul class="edit-list">\n                <li class="edit-list__item--add">\n                  <button class="edit-list__add-symbol" onclick=', '>+</button>\n                </li>\n                ', '\n              </ul>']),
     _templateObject3 = _taggedTemplateLiteral(['<li id="', '" class="edit-list__item">\n                    <h2>', '</h2>\n                    <button>join</button>\n                  </li>'], ['<li id="', '" class="edit-list__item">\n                    <h2>', '</h2>\n                    <button>join</button>\n                  </li>']),
-    _templateObject4 = _taggedTemplateLiteral(['<form onsubmit=', '>\n                <section>\n                  <p>\n                    <label>Name</label>\n                    <input type="text" />\n                  </p>\n                  <P>\n                    <label>number of players</label>\n                    <input type="number" oninput=', ' value="', '">\n                  </p>\n                  <ul>\n                    ', '\n                  </ul>\n                </section>\n                <section>\n                  <h6>Choose Map</h6>\n                  <ul class="map-options">\n                    ', '\n                  </ul>\n                </section>\n                <button type="submit">play</submit>\n              </form>'], ['<form onsubmit=', '>\n                <section>\n                  <p>\n                    <label>Name</label>\n                    <input type="text" />\n                  </p>\n                  <P>\n                    <label>number of players</label>\n                    <input type="number" oninput=', ' value="', '">\n                  </p>\n                  <ul>\n                    ', '\n                  </ul>\n                </section>\n                <section>\n                  <h6>Choose Map</h6>\n                  <ul class="map-options">\n                    ', '\n                  </ul>\n                </section>\n                <button type="submit">play</submit>\n              </form>']),
+    _templateObject4 = _taggedTemplateLiteral(['<form onsubmit=', '>\n                <section>\n                  <p>\n                    <label>Name</label>\n                    <input type="text" />\n                  </p>\n                  <P>\n                    <label>number of players</label>\n                    <input type="number" oninput=', ' value="', '">\n                  </p>\n                  <ul>\n                    ', '\n                  </ul>\n                </section>\n                <section>\n                  <h6>Choose Map</h6>\n                  <ul class="map-options">\n                    ', '\n                  </ul>\n                </section>\n                <button type="submit">ready</submit>\n              </form>'], ['<form onsubmit=', '>\n                <section>\n                  <p>\n                    <label>Name</label>\n                    <input type="text" />\n                  </p>\n                  <P>\n                    <label>number of players</label>\n                    <input type="number" oninput=', ' value="', '">\n                  </p>\n                  <ul>\n                    ', '\n                  </ul>\n                </section>\n                <section>\n                  <h6>Choose Map</h6>\n                  <ul class="map-options">\n                    ', '\n                  </ul>\n                </section>\n                <button type="submit">ready</submit>\n              </form>']),
     _templateObject5 = _taggedTemplateLiteral(['\n                      <li id="player-', '-form">\n                        <label>name <input type="text" value="', '"/></label>\n                        <label>colour <input type="color" value="#', '"></label>\n                      </li>'], ['\n                      <li id="player-', '-form">\n                        <label>name <input type="text" value="', '"/></label>\n                        <label>colour <input type="color" value="#', '"></label>\n                      </li>']),
     _templateObject6 = _taggedTemplateLiteral(['<li id="', '" class="map-options__option">', '</li>'], ['<li id="', '" class="map-options__option">', '</li>']);
 
@@ -22788,8 +22744,10 @@ function gameSelectionView(state, emit) {
 }
 
 function setupMenuView(state, emit) {
-  var players = state.playerCount;
-  return (0, _html2.default)(_templateObject4, startGame, addPlayers, players, state.players.map(function (player) {
+  debugger;
+  var game = state.gamesIndexed[state.params.game];
+  var maxPlayers = game.maxPlayers;
+  return (0, _html2.default)(_templateObject4, startGame, addPlayers, maxPlayers, game.players.map(function (player) {
     return (0, _html2.default)(_templateObject5, player.id, player.name, player.colour);
   }), state.mapOptions.map(function (map) {
     return (0, _html2.default)(_templateObject6, map.id, state.images ? state.mapCanvases[map.id].render((0, _partial2.default)(_renderMap.renderMap, [state.images['assets/tilemaps/tilemap.svg'], map])) : '');
@@ -22855,6 +22813,70 @@ function renderTile(tileAtlas, ctx, tile, _ref, map) {
     map.tsize // target height
     );
 }
+
+/***/ }),
+/* 336 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _tinycolor = __webpack_require__(292);
+
+var _tinycolor2 = _interopRequireDefault(_tinycolor);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var MAX_PLAYERS = 8;
+var MIN_PLAYERS = 2;
+
+function playerStore(state, events) {
+  state.events.SET_PLAYERS = 'setPlayers';
+  state.minPlayers = MIN_PLAYERS;
+  state.maxPlayers = MAX_PLAYERS;
+  state.playerCount = 2;
+  state.players = makePlayers(state.playerCount);
+  events.on(state.events.SET_PLAYERS, function (count) {
+    state.playerCount = count;
+    state.players = makePlayers(state.playerCount, state.players);
+
+    events.emit(state.events.RENDER);
+  });
+}
+
+function makePlayers(count) {
+  var players = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+
+  players = players.slice(0, count);
+  for (var i = 0; i < count; i++) {
+    players[i] = makePlayer(Object.assign({ id: i }, players[i]));
+  }
+  return players;
+}
+
+function makePlayer(_ref) {
+  var id = _ref.id,
+      name = _ref.name,
+      colour = _ref.colour;
+
+  return {
+    id: id,
+    name: name || 'player ' + (id + 1),
+    colour: colour || getDefaultColour(id)
+  };
+}
+
+function getDefaultColour(id) {
+  var percent = (id + 0.1) / MAX_PLAYERS;
+  var colour = (0, _tinycolor2.default)({ h: percent * 255, s: 1, l: 0.5 });
+  return colour.toHex();
+}
+
+exports.default = playerStore;
 
 /***/ })
 /******/ ]);

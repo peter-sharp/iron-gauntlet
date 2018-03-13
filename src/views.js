@@ -26,7 +26,9 @@ export function gameSelectionView(state, emit) {
 }
 
 export function setupMenuView (state, emit) {
-  var players = state.playerCount
+  debugger
+  var game = state.gamesIndexed[state.params.game]
+  var maxPlayers = game.maxPlayers
   return html`<form onsubmit=${startGame}>
                 <section>
                   <p>
@@ -35,10 +37,10 @@ export function setupMenuView (state, emit) {
                   </p>
                   <P>
                     <label>number of players</label>
-                    <input type="number" oninput=${addPlayers} value="${players}">
+                    <input type="number" oninput=${addPlayers} value="${maxPlayers}">
                   </p>
                   <ul>
-                    ${state.players.map(player => html`
+                    ${game.players.map(player => html`
                       <li id="player-${player.id}-form">
                         <label>name <input type="text" value="${player.name}"/></label>
                         <label>colour <input type="color" value="#${player.colour}"></label>
@@ -54,7 +56,7 @@ export function setupMenuView (state, emit) {
                     })}
                   </ul>
                 </section>
-                <button type="submit">play</submit>
+                <button type="submit">ready</submit>
               </form>`
   function startGame(ev) {}
   function addName(ev) {

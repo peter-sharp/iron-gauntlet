@@ -3,6 +3,7 @@ function game() {
   this.id = null
   this.players = []
   this.map = null
+  this.maxPlayers = 2
 }
 
 export default game

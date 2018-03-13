@@ -3,13 +3,19 @@ body {
   min-height: 100%;
   margin: 0;
 }
-.game {
-  overflow: hidden;
+
+button {
+  border: none;
+  padding: 0.5rem 1rem;
 }
+
 canvas {
   display: block;
 }
 
+.game {
+  overflow: hidden;
+}
 
 .map-options {
   display: flex;
