@@ -2,7 +2,7 @@ import partial from 'lodash/fp/partial'
 import Map from './map'
 
 export function renderMap(tileAtlas, map, ctx, canvas) {
-    debugger
+
     canvas.width = map.cols * map.tsize
     canvas.height = map.rows * map.tsize
 
@@ -13,7 +13,7 @@ export function renderMap(tileAtlas, map, ctx, canvas) {
 function renderTile(tileAtlas, ctx, tile, [r, c], map) {
 
         if (tile === null) return
-        debugger
+
         ctx.drawImage(
             tileAtlas, // image
             (tile) * map.tsize, // source x
