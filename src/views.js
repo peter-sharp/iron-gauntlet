@@ -1,6 +1,7 @@
 import html from 'choo/html'
 import {renderMap} from './renderMap'
 import partial from 'lodash/fp/partial'
+import times from 'lodash/fp/times'
 
 export function mainView (subView, state, emit) {
   return html`<main>
@@ -26,10 +27,12 @@ export function gameSelectionView(state, emit) {
 }
 
 export function setupMenuView (state, emit) {
-  debugger
   var game = state.gamesIndexed[state.params.game]
   var maxPlayers = game.maxPlayers
-  return html`<form onsubmit=${startGame}>
+  var remainingSlots = maxPlayers - game.players.length;
+  debugger
+
+  return html`<form onsubmit=${publishGame}>
                 <section>
                   <p>
                     <label>Name</label>
@@ -46,6 +49,8 @@ export function setupMenuView (state, emit) {
                         <label>colour <input type="color" value="#${player.colour}"></label>
                       </li>`
                     )}
+                    ${times(i => html`
+                      <li id="player-placeholder-${i}" class="player-placeholder"></li>`, remainingSlots)}
                   </ul>
                 </section>
                 <section>
@@ -56,9 +61,9 @@ export function setupMenuView (state, emit) {
                     })}
                   </ul>
                 </section>
-                <button type="submit">ready</submit>
+                <button type="submit">publish</submit>
               </form>`
-  function startGame(ev) {}
+  function publishGame(ev) {}
   function addName(ev) {
     emit(state.events.UPDATE_NAME, this.value)
   }
