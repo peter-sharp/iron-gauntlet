@@ -30,17 +30,24 @@ export function setupMenuView (state, emit) {
   var game = state.gamesIndexed[state.params.game]
   var maxPlayers = game.maxPlayers
   var remainingSlots = maxPlayers - game.players.length;
-  debugger
 
-  return html`<form onsubmit=${publishGame}>
+
+  return html`<form onsubmit=${saveGame}>
                 <section>
                   <p>
                     <label>Name</label>
                     <input type="text" />
                   </p>
+                  <p>
+                    <label>Visibility</label>
+                    <select>
+                      <option>private</option>
+                      <option>public</option>
+                    </select>
+                  </p>
                   <P>
                     <label>number of players</label>
-                    <input type="number" oninput=${addPlayers} value="${maxPlayers}">
+                    <input type="number" oninput=${updateMaxPlayers} value="${maxPlayers}">
                   </p>
                   <ul>
                     ${game.players.map(player => html`
@@ -61,14 +68,16 @@ export function setupMenuView (state, emit) {
                     })}
                   </ul>
                 </section>
-                <button type="submit">publish</submit>
+                <button type="submit">save</submit>
               </form>`
-  function publishGame(ev) {}
+  function saveGame(ev) {
+    emit(state.events.SAVE_GAME, game)
+  }
   function addName(ev) {
     emit(state.events.UPDATE_NAME, this.value)
   }
-  function addPlayers(ev) {
+  function updateMaxPlayers(ev) {
     ev.preventDefault()
-    emit(state.events.SET_PLAYERS, this.value)
+    emit(state.events.UPDATE_MAX_PLAYERS, this.value)
   }
 }

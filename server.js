@@ -14,6 +14,9 @@ app.use('/vendor', express.static(path.join(__dirname, 'node_modules')))
 io.on('connection', socket => {
   console.info('A player connected')
   playerStore.addPlayer(socket)
+
+  socket.emit('games', gameStore.getGame())
+
   socket.on('disconnect', function(){
     // TODO remove player
     console.info('A player disconnected')
