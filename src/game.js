@@ -4,6 +4,7 @@ function game() {
   this.players = []
   this.map = null
   this.maxPlayers = 2
+  this.visibility = 'public'
 }
 
 export default game
