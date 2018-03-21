@@ -14,12 +14,22 @@ function gameStore(socket, state, events) {
 
   state.events.ADD_GAME = 'addGame'
   state.events.CREATE_GAME = 'createGame'
+  state.events.JOIN_GAME = 'joinGame'
   state.events.GAME_CREATED = 'gameCreated'
   state.events.UPDATE_MAX_PLAYERS = 'updateMaxPlayers'
 
   events.on(state.events.CREATE_GAME, () => {
     socket.emit(state.events.CREATE_GAME, game())
     socket.on(state.events.GAME_CREATED, game => {
+
+      events.emit(state.events.ADD_GAME, game)
+      events.emit(state.events.PUSHSTATE, `/games/${game.id}`)
+    })
+  })
+
+  events.on(state.events.JOIN_GAME, id => {
+    socket.emit(state.events.JOIN_GAME, id, state.currentPlayer)
+    socket.on(state.events.JOINED_GAME, game => {
 
       events.emit(state.events.ADD_GAME, game)
       events.emit(state.events.PUSHSTATE, `/games/${game.id}`)

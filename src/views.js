@@ -18,11 +18,15 @@ export function gameSelectionView(state, emit) {
                 ${state.games.map(
                   game => html`<li id="${game.id}" class="edit-list__item">
                     <h2>${game.name}</h2>
-                    <button>join</button>
+                    <button onclick=${joinGame}>join</button>
                   </li>`)}
               </ul>`
               function addGame() {
                 emit(state.events.CREATE_GAME)
+              }
+
+              function joinGame() {
+                emit(state.events.JOIN_GAME, this.parentNode.id)
               }
 }
 
