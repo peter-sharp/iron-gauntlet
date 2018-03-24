@@ -6,7 +6,7 @@ function makePlayer({id, name, colour, role} = {}) {
   id = id || uuid()
   return {
     id,
-    name: name || `player ${id}`,
+    name: name || '',
     colour: colour || getDefaultColour(id),
     role: role || 'player'
   }

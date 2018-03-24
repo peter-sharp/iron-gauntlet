@@ -1,8 +1,10 @@
 const playerStore = require('./playerStore')
 const Game = require('./src/game')
+
 const gameStore = require('./gameStore')
+
 const path = require('path')
-const uuid = require('uuid/v4');
+
 const express = require('express')
 const app = express()
 const http = require('http').Server(app)
@@ -14,7 +16,7 @@ app.use('/vendor', express.static(path.join(__dirname, 'node_modules')))
 
 io.on('connection', socket => {
   console.info('A player connected')
-  playerStore.addSocket(socket)
+  playerStore.updatePlayer(socket)
 
   socket.emit('games', gameStore.getGame().filter(game => game.visibility == 'public'))
 
@@ -24,19 +26,25 @@ io.on('connection', socket => {
   });
 
   socket.on('createGame', game => {
-    game.id = uuid()
-    gameStore.addGame(game)
+
+    gameStore.updateGame(game)
     socket.emit('gameCreated', game)
   })
 
   socket.on('joinGame', (id, player) => {
+    playerStore.updatePlayer(socket, player)
+    player = playerStore.getPlayer(socket)
     var game = gameStore.getGame(id)
+
+
     addPlayerToGame(game, player, socket)
 
   })
 
+
   function addPlayerToGame(game, player, socket) {
     game = Game.addPlayer(game, player)
+    gameStore.updateGame(game)
     socket.join(`game_${game.id}`)
 
     socket.broadcast.to(`game_${game.id}`).emit('addPlayer', player)

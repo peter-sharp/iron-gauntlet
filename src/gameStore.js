@@ -12,6 +12,8 @@ function gameStore(socket, state, events) {
   state.games = []
   state.gamesIndexed = {}
 
+  state.currentGame = null;
+
   state.events.ADD_GAME = 'addGame'
   state.events.CREATE_GAME = 'createGame'
   state.events.JOIN_GAME = 'joinGame'
@@ -25,6 +27,7 @@ function gameStore(socket, state, events) {
     socket.on(state.events.GAME_CREATED, game => {
 
       events.emit(state.events.ADD_GAME, game)
+      state.currentGame = game;
       events.emit(state.events.PUSHSTATE, `/games/${game.id}`)
     })
   })
@@ -34,6 +37,7 @@ function gameStore(socket, state, events) {
     socket.on(state.events.JOINED_GAME, game => {
 
       events.emit(state.events.ADD_GAME, game)
+      state.currentGame = game;
       events.emit(state.events.PUSHSTATE, `/games/${game.id}`)
     })
   })
