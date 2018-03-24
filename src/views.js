@@ -18,7 +18,7 @@ export function gameSelectionView(state, emit) {
                 </li>
                 ${state.games.map(
                   game => html`<li id="${game.id}" class="edit-list__item">
-                    <h2>${game.name}</h2>
+                    <h2>${game.title}</h2>
                     <button onclick=${joinGame}>join</button>
                   </li>`)}
               </ul>`
@@ -32,7 +32,7 @@ export function gameSelectionView(state, emit) {
 }
 
 export function setupMenuView (state, emit) {
-  var game = state.gamesIndexed[state.params.game]
+  var game = state.currentGame
   var maxPlayers = game.maxPlayers
   var remainingSlots = maxPlayers - game.players.length
   var isOwner = Game.isOwner(game, state.currentPlayer)
@@ -48,26 +48,39 @@ export function setupMenuView (state, emit) {
                     html`<h2>${game.title}</h2>`
                   )}
 
-                  <p>
-                    <label>Visibility</label>
-                    <select>
-                      <option>private</option>
-                      <option>public</option>
-                    </select>
-                  </p>
-                  <P>
-                    <label>number of players</label>
-                    <input type="number" oninput=${updateMaxPlayers} value="${maxPlayers}">
-                  </p>
-                  <ul>
-                    ${game.players.map(player => html`
-                      <li id="player-${player.id}-form">
+                  ${displayIf(
+                    isOwner,
+                    html`<p>
+                            <label>Visibility</label>
+                            <select>
+                              <option>private</option>
+                              <option>public</option>
+                            </select>
+                          </p>`)}
+                  ${displayIf(
+                    isOwner,
+                    html`
+                        <P>
+                          <label>number of players</label>
+                          <input type="number" oninput=${updateMaxPlayers} value="${maxPlayers}">
+                        </p>`)}
+
+                  <ul class="player-list">
+                    ${game.players.map(player => displayIf(
+                      player.id == state.currentPlayer.id,
+                      html`
+                      <li class="player-list__player" id="player-${player.id}-form">
                         <label>name <input type="text" value="${player.name}"/></label>
                         <label>colour <input type="color" value="#${player.colour}"></label>
+                      </li>`,
+                      html`
+                      <li class="player-list__player" id="player-${player.id}-display">
+                        <span>${player.name}</span>
+                        <span class="lobby-player__colour" style="background-color: #${player.colour}"></span>
                       </li>`
-                    )}
+                    ))}
                     ${times(i => html`
-                      <li id="player-placeholder-${i}" class="player-placeholder"></li>`, remainingSlots)}
+                      <li class="player-list__player player-list__player--placeholder" id="player-placeholder-${i}" ></li>`, remainingSlots)}
                   </ul>
                 </section>
                 <section>
