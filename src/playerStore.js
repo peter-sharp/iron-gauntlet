@@ -3,6 +3,7 @@ const MAX_PLAYERS = 8
 const MIN_PLAYERS = 2
 
 function playerStore (state, events) {
+  state.events.SET_PLAYERS = 'setPlayers';
   state.currentPlayer = makePlayer()
 
   events.on(state.events.SET_PLAYERS, (count) => {

@@ -15,11 +15,13 @@ function gameStore(socket, state, events) {
   state.events.ADD_GAME = 'addGame'
   state.events.CREATE_GAME = 'createGame'
   state.events.JOIN_GAME = 'joinGame'
+  state.events.JOINED_GAME = 'joinedGame'
   state.events.GAME_CREATED = 'gameCreated'
   state.events.UPDATE_MAX_PLAYERS = 'updateMaxPlayers'
 
-  events.on(state.events.CREATE_GAME, () => {
-    socket.emit(state.events.CREATE_GAME, game())
+  events.on(state.events.CREATE_GAME, function createNewGame() {
+
+    socket.emit(state.events.CREATE_GAME, game({ownerId: state.currentPlayer.id}))
     socket.on(state.events.GAME_CREATED, game => {
 
       events.emit(state.events.ADD_GAME, game)
@@ -27,7 +29,7 @@ function gameStore(socket, state, events) {
     })
   })
 
-  events.on(state.events.JOIN_GAME, id => {
+  events.on(state.events.JOIN_GAME, function joinGame(id) {
     socket.emit(state.events.JOIN_GAME, id, state.currentPlayer)
     socket.on(state.events.JOINED_GAME, game => {
 
@@ -50,7 +52,7 @@ function gameStore(socket, state, events) {
     state.gamesIndexed[game.id] = game
   }
 
-  socket.on('games', function(games) {
+  socket.on('games', function updateGames(games) {
     state.games = games
     games.forEach(game => {
       state.gamesIndexed[game.id] = game

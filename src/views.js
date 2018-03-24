@@ -2,6 +2,7 @@ import html from 'choo/html'
 import {renderMap} from './renderMap'
 import partial from 'lodash/fp/partial'
 import times from 'lodash/fp/times'
+import Game from './game'
 
 export function mainView (subView, state, emit) {
   return html`<main>
@@ -33,15 +34,20 @@ export function gameSelectionView(state, emit) {
 export function setupMenuView (state, emit) {
   var game = state.gamesIndexed[state.params.game]
   var maxPlayers = game.maxPlayers
-  var remainingSlots = maxPlayers - game.players.length;
-
+  var remainingSlots = maxPlayers - game.players.length
+  var isOwner = Game.isOwner(game, state.currentPlayer)
 
   return html`<form onsubmit=${saveGame}>
                 <section>
-                  <p>
-                    <label>Name</label>
-                    <input type="text" />
-                  </p>
+                  ${displayIf(
+                    isOwner,
+                    html`<p>
+                      <label>Name</label>
+                      <input type="text" value="${game.title}"/>
+                    </p>`,
+                    html`<h2>${game.title}</h2>`
+                  )}
+
                   <p>
                     <label>Visibility</label>
                     <select>
@@ -84,4 +90,8 @@ export function setupMenuView (state, emit) {
     ev.preventDefault()
     emit(state.events.UPDATE_MAX_PLAYERS, this.value)
   }
+}
+
+function displayIf(predicate, el, fallbackEl = '') {
+  return predicate ? el : fallbackEl
 }

@@ -1,7 +1,11 @@
-const Socket = require('socket.io/socket')
 
-var players = {};
-exports.addSocket = function(player) {
-  player.playerInfo = player.playerInfo || {}
-  players[player.id] = player
+
+var sockets = {};
+exports.addSocket = function(socket) {
+  socket.playerInfo = socket.playerInfo || {}
+  sockets[socket.id] = socket
+}
+
+exports.getSocket = function(id) {
+  return sockets[id] || false;
 }
