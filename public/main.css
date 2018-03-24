@@ -2,8 +2,11 @@ body {
   width: 100%;
   min-height: 100%;
   margin: 0;
+  font-family: sans-serif;
 }
 
+input[type="color"],
+input[type="submit"],
 button {
   border: none;
   padding: 0.5rem 1rem;
@@ -17,12 +20,17 @@ canvas {
   overflow: hidden;
 }
 
+.player-list,
+.edit-list,
+.map-options {
+  list-style-type: none;
+  padding-left: 0;
+}
+
 .map-options {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  list-style-type: none;
-  padding-left: 0
 }
 
 .map-options__option {
@@ -35,4 +43,11 @@ canvas {
 .fit-image {
   width: 100%;
   height: auto;
+}
+
+.lobby-player__colour {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
 }
