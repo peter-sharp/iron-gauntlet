@@ -13,13 +13,13 @@ export function mainView (subView, state, emit) {
 
 export function gameSelectionView(state, emit) {
   return html`<ul class="edit-list">
-                <li class="edit-list__item--add">
+                <li class="edit-list__item edit-list__item--add button--add">
                   <button class="edit-list__add-symbol" onclick=${addGame}>+</button>
                 </li>
                 ${state.games.map(
-                  game => html`<li id="${game.id}" class="edit-list__item">
-                    <h2>${game.title}</h2>
-                    <button onclick=${joinGame}>join</button>
+                  game => html`<li id="${game.id}" class="edit-list__item edit-list__item--join">
+                    <h2 class="edit-list__title">${game.title}</h2>
+                    <button class="button--secondary" onclick=${joinGame}>join</button>
                   </li>`)}
               </ul>`
               function addGame() {
@@ -91,7 +91,7 @@ export function setupMenuView (state, emit) {
                     })}
                   </ul>
                 </section>
-                <button type="submit">save</submit>
+                <button class="button--primary" type="submit">save</submit>
               </form>`
   function saveGame(ev) {
     emit(state.events.SAVE_GAME, game)

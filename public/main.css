@@ -1,15 +1,35 @@
+:root {
+  --colour-primary: #0C164F;
+  --colour-secondary: #226699;
+  --colour-accent: #FFD745;
+  --colour-background: #423B3B;
+  --colour-primary-transparent: rgba(12, 22, 79, 0.73);
+  --pattern-blueprint: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj4KPHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIGZpbGw9IiMyNjkiPjwvcmVjdD4KPGcgZmlsbD0iIzY0OTRiNyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMSIgeT0iMjAiPjwvcmVjdD4KPHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxIiB5PSI0MCI+PC9yZWN0Pgo8cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEiIHk9IjYwIj48L3JlY3Q+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMSIgeT0iODAiPjwvcmVjdD4KPHJlY3Qgd2lkdGg9IjEiIGhlaWdodD0iMTAwIiB4PSIyMCI+PC9yZWN0Pgo8cmVjdCB3aWR0aD0iMSIgaGVpZ2h0PSIxMDAiIHg9IjQwIj48L3JlY3Q+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEwMCIgeD0iNjAiPjwvcmVjdD4KPHJlY3Qgd2lkdGg9IjEiIGhlaWdodD0iMTAwIiB4PSI4MCI+PC9yZWN0Pgo8L2c+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZT0iIzZiOTNiMSI+PC9yZWN0Pgo8L3N2Zz4=");
+}
 body {
   width: 100%;
   min-height: 100%;
   margin: 0;
   font-family: sans-serif;
+  font-size: 16px;
+  background: var(--pattern-blueprint);
+  color: #fff;
 }
 
+main {
+  padding: 0 1rem;
+}
+
+.button,
 input[type="color"],
 input[type="submit"],
 button {
+  cursor: pointer;
   border: none;
   padding: 0.5rem 1rem;
+  color: inherit;
+  font-size: inherit;
+  background-color: inherit;
 }
 
 canvas {
@@ -50,4 +70,51 @@ canvas {
   width: 1em;
   height: 1em;
   border-radius: 50%;
+}
+
+.edit-list__item {
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--colour-primary-transparent);
+}
+
+.edit-list__item--join {
+  padding-left: 1.2rem;
+}
+
+.edit-list__item--add {
+  justify-content: center;
+  cursor: pointer;
+}
+
+.edit-list__item + .edit-list__item {
+  margin-top: 2em;
+}
+
+.edit-list__add-symbol {
+  background-color: transparent;
+  font-size: 2rem;
+  color: #fff;
+}
+
+.button--secondary {
+  border-style: solid;
+  border-width: 0.2rem;
+  border-color: #fff;
+  background-color: transparent;
+}
+
+.button--primary {
+  background-color: var(--colour-primary);
+}
+
+.button--add {
+  justify-content: center;
+  border-style: dashed;
+  background-color: transparent;
+  transition: background-color 500ms ease;
+}
+
+.button--add:hover {
+  background-color: var(--colour-primary-transparent);
 }
