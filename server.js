@@ -27,14 +27,14 @@ io.on('connection', socket => {
 
   socket.on('createGame', game => {
 
-    gameStore.updateGame(game)
+    game = gameStore.updateGame(game)
     socket.emit('gameCreated', game)
   })
 
   socket.on('joinGame', (id, player) => {
     playerStore.updatePlayer(socket, player)
     player = playerStore.getPlayer(socket)
-    var game = gameStore.getGame(id)
+    let game = gameStore.getGame(id)
 
 
     addPlayerToGame(game, player, socket)
@@ -44,7 +44,7 @@ io.on('connection', socket => {
 
   function addPlayerToGame(game, player, socket) {
     game = Game.addPlayer(game, player)
-    gameStore.updateGame(game)
+    game = gameStore.updateGame(game)
     socket.join(`game_${game.id}`)
 
     socket.broadcast.to(`game_${game.id}`).emit('addPlayer', player)

@@ -10,6 +10,7 @@ exports.updateGame = function(game) {
   game.id = game.id || uuid()
   game.title = game.title || faker.random.words()
   games[game.id] = game
+  return game
 }
 
 exports.getGame = function(id) {
