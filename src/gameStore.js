@@ -1,4 +1,4 @@
-import game from './game'
+import Game from './game'
 import curry from 'lodash/fp/curry'
 
 export function getCurrentGame(state) {
@@ -23,15 +23,17 @@ function gameStore(socket, state, events) {
   state.currentGame = null;
 
   state.events.ADD_GAME           = 'addGame'
+  state.events.ADD_PLAYER         = 'addPlayer'
   state.events.CREATE_GAME        = 'createGame'
   state.events.JOIN_GAME          = 'joinGame'
   state.events.JOINED_GAME        = 'joinedGame'
   state.events.GAME_CREATED       = 'gameCreated'
   state.events.UPDATE_MAX_PLAYERS = 'updateMaxPlayers'
+  state.events.GAMES              = 'games'
 
   events.on(state.events.CREATE_GAME, function createNewGame() {
 
-    socket.emit(state.events.CREATE_GAME, game({ownerId: state.currentPlayer.id}))
+    socket.emit(state.events.CREATE_GAME, Game({ownerId: state.currentPlayer.id}))
     socket.on(state.events.GAME_CREATED, startCurrentGame(state, events))
   })
 
@@ -41,7 +43,7 @@ function gameStore(socket, state, events) {
   })
 
   events.on(state.events.UPDATE_MAX_PLAYERS, maxPlayers => {
-    var game = Object.assign({}, state.currentGame)
+    let game = Object.assign({}, state.currentGame)
     game.maxPlayers = maxPlayers
     state.currentGame = game
     events.emit(state.events.RENDER)
@@ -54,11 +56,16 @@ function gameStore(socket, state, events) {
     state.gamesIndexed[game.id] = game
   }
 
-  socket.on('games', function updateGames(games) {
+  socket.on(state.events.GAMES, function updateGames(games) {
     state.games = games
     games.forEach(game => {
       state.gamesIndexed[game.id] = game
     })
+    events.emit(state.events.RENDER)
+  })
+
+  socket.on(state.events.ADD_PLAYER, function addPlayerTOGame(player) {
+    state.currentGame = Game.addPlayer(state.currentGame, player)
     events.emit(state.events.RENDER)
   })
 }

@@ -1,6 +1,6 @@
 # todo
 
-- [ ] handle adding player to all client games once joined
+- [x] handle adding player to all client games once joined
 - [ ] generate map options once per game and give to all players
 - [x] make placeholder game names persistent until changed
 - [ ] server render / handle app routes
