@@ -14,7 +14,7 @@ function Player({id, name, colour, role} = {}) {
 
   this.id = id || uuid(),
   this.name = name || '',
-  this.colour = colour || getDefaultColour(id),
+  this.colour = colour || getDefaultColour(this.id),
   this.role = role || 'player'
 }
 
@@ -24,4 +24,4 @@ function getDefaultColour(id){
   return colour.toHex()
 }
 
-module.exports = makePlayer
+module.exports = Player

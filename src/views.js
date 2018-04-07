@@ -32,11 +32,11 @@ export function gameSelectionView(state, emit) {
 }
 
 export function setupMenuView (state, emit) {
-  var game = state.currentGame
-  var maxPlayers = game.maxPlayers
-  var remainingSlots = maxPlayers - game.players.length
-  var isOwner = Game.isOwner(game, state.currentPlayer)
-
+  let game = state.currentGame
+  let maxPlayers = game.maxPlayers
+  let remainingSlots = maxPlayers - game.players.length
+  let isOwner = Game.isOwner(game, state.currentPlayer)
+  debugger
   return html`<form onsubmit=${saveGame}>
                 <section>
                   ${displayIf(
@@ -86,7 +86,7 @@ export function setupMenuView (state, emit) {
                 <section>
                   <h6>Choose Map</h6>
                   <ul class="map-options">
-                    ${state.mapOptions.map( map => {
+                    ${game.mapOptions.map( map => {
                       return html`<li id="${map.id}" class="map-options__option">${state.images ? state.mapCanvases[map.id].render(partial(renderMap, [state.images['assets/tilemaps/tilemap.svg'], map])) : ''}</li>`
                     })}
                   </ul>

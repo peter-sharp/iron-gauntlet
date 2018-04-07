@@ -1,8 +1,8 @@
 import uniqueId from 'lodash/fp/uniqueId'
 
-export function Map({cols = 20, rows = 20, tsize = 48, tiles = []} = {}) {
-  if(!(this instanceof Map)) return new Map({cols, rows, tsize, tiles})
-  this.id = uniqueId('map_')
+export function Map({id = null, cols = 20, rows = 20, tsize = 48, tiles = []} = {}) {
+  if(!(this instanceof Map)) return new Map({id, cols, rows, tsize, tiles})
+  this.id = id || uniqueId('map_')
   this.cols = cols
   this.rows = rows
   this.tsize = tsize

@@ -18,10 +18,15 @@ export function mapStore (state, events) {
   state.mapCols = MAP_COLS
   state.mapRows = MAP_ROWS
   state.mapOptCount = OPTION_COUNT
+  events.on(state.events.SETUP_NEW_GAME, function setupMapOptions(game){
+    let generator = partial(generateVoronoiMap, [state.terrainTypes, 'water'])
+    game.mapOptions = makeMapOptions(generator, state.mapOptCount, {cols: state.mapCols, rows: state.mapRows})
+    state.currentGame = game
+  })
 
-  var generator = partial(generateVoronoiMap, [state.terrainTypes, 'water'])
-  state.mapOptions = makeMapOptions(generator, state.mapOptCount, {cols: state.mapCols, rows: state.mapRows})
-  state.mapCanvases = createMapCanvases(state.mapOptions)
+  events.on(state.events.GAME_STARTED, function setupCanvases (game) {
+    state.mapCanvases = createMapCanvases(game.mapOptions)
+  })
 }
 
 function makeMapOptions(generator, count, size) {

@@ -1,3 +1,5 @@
+const isObject = require('lodash/fp/isObject')
+
 function Game({
                 id,
                 title,
@@ -15,6 +17,7 @@ function Game({
       ownerId,
       players,
       map,
+      mapOptions,
       maxPlayers,
       visibility
     })
@@ -31,6 +34,13 @@ function Game({
 
 Game.addPlayer = function(game, player) {
   game.players.push(player)
+  return game
+}
+
+Game.removePlayer = function(game, playerId) {
+  if(isObject(playerId)) playerId = playerId.id
+  let idx = game.players.findIndex(player => player.id === playerId)
+  game.players.splice(idx, 1)
   return game
 }
 
