@@ -1,7 +1,7 @@
-import partial from 'lodash/fp/partial'
-import Map from './map'
+const partial = require('lodash/fp/partial')
+const Map = require('./map')
 
-export function renderMap(tileAtlas, map, ctx, canvas) {
+function renderMap(tileAtlas, map, ctx, canvas) {
 
     canvas.width = map.cols * map.tsize
     canvas.height = map.rows * map.tsize
@@ -27,3 +27,5 @@ function renderTile(tileAtlas, ctx, tile, [r, c], map) {
         );
 
 }
+
+module.exports = {renderMap}

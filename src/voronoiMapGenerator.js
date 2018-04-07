@@ -1,12 +1,12 @@
-import Map from './map'
+const Map = require('./map')
 
-import random from 'lodash/fp/random'
-import property from 'lodash/fp/property'
-import partial from 'lodash/fp/partial'
-import flow from 'lodash/fp/flow'
-import values from 'lodash/fp/values'
+const random = require('lodash/fp/random')
+const property = require('lodash/fp/property')
+const partial = require('lodash/fp/partial')
+const flow = require('lodash/fp/flow')
+const values = require('lodash/fp/values')
 
-export function generate(terrainTypes, defaultTerrainType, map) {
+function generate(terrainTypes, defaultTerrainType, map) {
   var maxPoints = map.rows + map.cols / 4
   var vects = generateRandomVects(map, maxPoints)
   var points = vects.map(vec => makeTerrainPoint(randomTerrainName(terrainTypes), vec))
@@ -76,4 +76,4 @@ function generateRandomVects(map, max = 14) {
   return vecs
 }
 
-export default generate
+module.exports = generate

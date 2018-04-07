@@ -1,6 +1,6 @@
-import uniqueId from 'lodash/fp/uniqueId'
+const uniqueId = require('lodash/fp/uniqueId')
 
-export function Map({id = null, cols = 20, rows = 20, tsize = 48, tiles = []} = {}) {
+function Map({id = null, cols = 20, rows = 20, tsize = 48, tiles = []} = {}) {
   if(!(this instanceof Map)) return new Map({id, cols, rows, tsize, tiles})
   this.id = id || uniqueId('map_')
   this.cols = cols
@@ -55,4 +55,4 @@ Map.vecsEqual = ([r1, c1], [r2, c2]) => {
   return r1 === r2 && c1 === c2;
 }
 
-export default Map
+module.exports = Map

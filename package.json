@@ -2,6 +2,7 @@
   "name": "iron-gauntlet",
   "version": "0.0.1",
   "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
     "choo": "^6.10.3",
     "express": "^4.16.3",
     "faker": "^4.1.0",

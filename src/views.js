@@ -1,17 +1,17 @@
-import html from 'choo/html'
-import {renderMap} from './renderMap'
-import partial from 'lodash/fp/partial'
-import times from 'lodash/fp/times'
-import Game from './game'
+const html = require('choo/html')
+const {renderMap} = require('./renderMap')
+const partial = require('lodash/fp/partial')
+const times = require('lodash/fp/times')
+const Game = require('./game')
 
-export function mainView (subView, state, emit) {
+function mainView (subView, state, emit) {
   return html`<main>
                 <h1>Iron Gauntlet</h1>
                 ${subView(state, emit)}
               </main>`
 }
 
-export function gameSelectionView(state, emit) {
+function gameSelectionView(state, emit) {
   return html`<ul class="edit-list">
                 <li class="edit-list__item edit-list__item--add button--add">
                   <button class="edit-list__add-symbol" onclick=${addGame}>+</button>
@@ -31,9 +31,11 @@ export function gameSelectionView(state, emit) {
               }
 }
 
-export function setupMenuView (state, emit) {
-  let game = state.currentGame
+function setupMenuView (state, emit) {
+  let game = state.currentGame || {}
   let maxPlayers = game.maxPlayers
+  game.players = game.players || []
+  game.mapOptions = game.mapOptions || []
   let remainingSlots = maxPlayers - game.players.length
   let isOwner = Game.isOwner(game, state.currentPlayer)
   debugger
@@ -87,7 +89,7 @@ export function setupMenuView (state, emit) {
                   <h6>Choose Map</h6>
                   <ul class="map-options">
                     ${game.mapOptions.map( map => {
-                      return html`<li id="${map.id}" class="map-options__option">${state.images ? state.mapCanvases[map.id].render(partial(renderMap, [state.images['assets/tilemaps/tilemap.svg'], map])) : ''}</li>`
+                      return html`<li id="${map.id}" class="map-options__option">${state.images ? state.mapCanvases[map.id].render(partial(renderMap, [state.images['/assets/tilemaps/tilemap.svg'], map])) : ''}</li>`
                     })}
                   </ul>
                 </section>
@@ -108,3 +110,5 @@ export function setupMenuView (state, emit) {
 function displayIf(predicate, el, fallbackEl = '') {
   return predicate ? el : fallbackEl
 }
+
+module.exports = {mainView, gameSelectionView, setupMenuView}

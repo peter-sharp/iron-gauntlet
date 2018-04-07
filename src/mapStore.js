@@ -1,16 +1,19 @@
-import Map from './map';
-import generateVoronoiMap from './voronoiMapGenerator'
-import {CanvasComponent} from './CanvasComponent'
+const Map = require('./map')
+const generateVoronoiMap = require('./voronoiMapGenerator')
+const {CanvasComponent} = require('./CanvasComponent')
 
-import partial from 'lodash/fp/partial'
-import TerrainType from './TerrainType'
+const partial = require('lodash/fp/partial')
+const TerrainType = require('./TerrainType')
 
 const OPTION_COUNT = 5
 const MAP_COLS = 40
 const MAP_ROWS = 30
 
-export function mapStore (state, events) {
-  state.events.SET_CANVAS = 'setCanvas'
+function mapStore (state, events) {
+
+  state.events.SETUP_NEW_GAME = state.events.SETUP_NEW_GAME || 'setupNewGame'
+  state.events.LOBBY_JOINED = state.events.LOBBY_JOINED || 'lobbyJoined'
+
   state.terrainTypes = {
     land: TerrainType({name: 'land', ids: [1,2]}),
     water: TerrainType({name: 'water', ids: [0]})
@@ -18,13 +21,18 @@ export function mapStore (state, events) {
   state.mapCols = MAP_COLS
   state.mapRows = MAP_ROWS
   state.mapOptCount = OPTION_COUNT
+
+  if(state.currentGame) {
+    state.mapCanvases = createMapCanvases(state.currentGame.mapOptions)
+  }
+
   events.on(state.events.SETUP_NEW_GAME, function setupMapOptions(game){
     let generator = partial(generateVoronoiMap, [state.terrainTypes, 'water'])
     game.mapOptions = makeMapOptions(generator, state.mapOptCount, {cols: state.mapCols, rows: state.mapRows})
     state.currentGame = game
   })
 
-  events.on(state.events.GAME_STARTED, function setupCanvases (game) {
+  events.on(state.events.LOBBY_JOINED, function setupCanvases (game) {
     state.mapCanvases = createMapCanvases(game.mapOptions)
   })
 }
@@ -49,4 +57,4 @@ function createMapCanvases(mapOptions) {
   }, {})
 }
 
-export default mapStore
+module.exports = mapStore

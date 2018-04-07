@@ -1,7 +1,7 @@
-import html from 'choo/html'
-import Nanocomponent from 'nanocomponent'
+const html = require('choo/html')
+const Nanocomponent = require('nanocomponent')
 
-export function CanvasComponent () {
+function CanvasComponent () {
   if(!(this instanceof CanvasComponent)) return new CanvasComponent()
   Nanocomponent.call(this)
   this.canvas = null
@@ -24,3 +24,5 @@ CanvasComponent.prototype.update = function(renderCb) {
   this.renderCb(this.ctx, this.canvas)
   return false;
 }
+
+module.exports = {CanvasComponent}

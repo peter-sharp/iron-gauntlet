@@ -1,7 +1,9 @@
 const playerStore = require('./playerStore')
 const Game = require('./src/game')
-
+const clientApp = require('./src/app')
 const gameStore = require('./gameStore')
+const cheerio = require('cheerio')
+const fs = require('fs')
 
 const path = require('path')
 
@@ -14,11 +16,31 @@ const PORT = process.env.PORT || 8080
 app.use(express.static(path.join(__dirname, 'public')))
 app.use('/vendor', express.static(path.join(__dirname, 'node_modules')))
 
+clientApp.use(gameStore)
+
+app.get('/games/:game', handleClientRoute)
+
+function handleClientRoute (req, res) {
+  fs.readFile('./public/index.html', (err, data) => {
+    if (err) throw err;
+    let initialState = {
+      games: gameStore.getPublicGames(),
+      currentGame: gameStore.getGame(req.params.game)
+    }
+    let $ = cheerio.load(data)
+    let $app = cheerio('main', clientApp.toString(req.url, initialState))
+    $(".iron-gauntlet").append($app.html())
+    $("body").prepend(`<script>window.initialState = ${JSON.stringify(initialState)}</script>`)
+    res.send($.html())
+  });
+
+}
+
 io.on('connection', socket => {
   console.info('A player connected')
   playerStore.updatePlayer(socket)
 
-  socket.emit('games', gameStore.getGame().filter(game => game.visibility == 'public'))
+  socket.emit('games', gameStore.getPublicGames())
 
   socket.on('disconnect', function(){
     // TODO remove player

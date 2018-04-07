@@ -1,9 +1,9 @@
-import partial from 'lodash/fp/partial'
-import map from 'lodash/fp/map'
-import reduce from 'lodash/fp/reduce'
-import curry from 'lodash/fp/curry'
+const partial = require('lodash/fp/partial')
+const map = require('lodash/fp/map')
+const reduce = require('lodash/fp/reduce')
+const curry = require('lodash/fp/curry')
 
-export function loadImage(src) {
+function loadImage(src) {
   var img = new Image()
 
   var d = new Promise(function handlePromise(res, rej) {
@@ -17,9 +17,9 @@ export function loadImage(src) {
   return d
 }
 
-export default {loadImage}
 
-export function loadImages(srcs) {
+
+loadImage.loadImages = function(srcs) {
   return Promise.all(map(loadImage, srcs)).then(reduceBySrc)
 }
 
@@ -30,3 +30,5 @@ var indexBy = curry(function (key, val, acc, obj) {
 })
 
 var reduceBySrc = partial(reduce, [indexBy('src', 'img'), {}])
+
+module.exports = loadImage

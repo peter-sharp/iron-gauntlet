@@ -1,26 +1,13 @@
-import Choo from 'choo'
-import partial from 'lodash/fp/partial'
+import app from './app.js'
 import io from 'socket.io-client'
-import mapStore from './mapStore'
-import playerStore from './playerStore'
+import serverEvents from './serverEvents'
 import gameStore from './gameStore'
 import assetStore from './assetStore'
-import {mainView} from './views'
-import {gameSelectionView} from './views'
-import {setupMenuView} from './views'
-
+import partial from 'lodash/fp/partial'
 const socket = io()
-const app = Choo()
-
-app.use(playerStore)
-
-app.use(partial(gameStore, [socket]))
+app.use(partial(serverEvents, [socket]))
 app.use(assetStore)
-app.use(mapStore)
-
-app.route('/', partial(mainView, [gameSelectionView]))
-app.route('/games/:game', partial(mainView, [setupMenuView]))
-
+app.use(gameStore)
 
 app.mount('.iron-gauntlet')
 
