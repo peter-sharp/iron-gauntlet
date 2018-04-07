@@ -7,6 +7,7 @@ const enterGameLobby = curry(function (state, events, game) {
   state.currentGame = game
   events.emit(state.events.PUSHSTATE, `/games/${game.id}`)
   events.emit(state.events.LOBBY_JOINED, state.currentGame)
+  events.emit(state.events.UPDATE_CURRENT_PLAYER, Game.getPlayer(state.currentGame, state.currentPlayer))
   return state.currentGame
 })
 
@@ -21,17 +22,26 @@ function serverEvents (socket, state, events) {
   state.events.ADD_PLAYER = state.events.ADD_PLAYER || 'addPlayer'
   state.events.LOBBY_JOINED = state.events.LOBBY_JOINED || 'lobbyJoined'
 
+  if(state.currentGame) {
+    socket.emit(state.events.JOIN_GAME, state.currentGame.id, state.currentPlayer)
+    socket.once(state.events.JOINED_GAME, game => {
+      events.emit(state.events.ADD_GAME, game)
+      state.currentGame = game
+      events.emit(state.events.LOBBY_JOINED, state.currentGame)
+    })
+  }
+
   events.on(state.events.CREATE_GAME, function createNewGame() {
     state.currentGame = Game({ownerId: state.currentPlayer.id})
     events.emit(state.events.SETUP_NEW_GAME, state.currentGame)
     socket.emit(state.events.CREATE_GAME, state.currentGame)
-    socket.on(state.events.GAME_CREATED, enterGameLobby(state, events))
+    socket.once(state.events.GAME_CREATED, enterGameLobby(state, events))
 
   })
 
   events.on(state.events.JOIN_GAME, function joinGame(id) {
     socket.emit(state.events.JOIN_GAME, id, state.currentPlayer)
-    socket.on(state.events.JOINED_GAME, enterGameLobby(state, events))
+    socket.once(state.events.JOINED_GAME, enterGameLobby(state, events))
   })
 
   socket.on(state.events.GAMES, function updateGames(games) {

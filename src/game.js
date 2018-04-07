@@ -33,6 +33,7 @@ function Game({
 }
 
 Game.addPlayer = function(game, player) {
+  if(Game.getPlayer(game, player)) return game
   game.players.push(player)
   return game
 }
@@ -42,6 +43,11 @@ Game.removePlayer = function(game, playerId) {
   let idx = game.players.findIndex(player => player.id === playerId)
   game.players.splice(idx, 1)
   return game
+}
+
+Game.getPlayer = function(game, playerId) {
+  if(isObject(playerId)) playerId = playerId.id
+  return game.players.find(player => player.id === playerId)
 }
 
 Game.isOwner = function(game, player) {

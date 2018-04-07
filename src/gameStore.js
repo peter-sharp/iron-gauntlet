@@ -13,8 +13,6 @@ function gameStore(state, events) {
 
   state.currentGame = state.currentGame || null
 
-  debugger
-
   state.events.ADD_GAME           = 'addGame'
   state.events.ADD_PLAYER         = 'addPlayer'
   state.events.CREATE_GAME        = 'createGame'
