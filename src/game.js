@@ -8,7 +8,17 @@ function Game({
                 maxPlayers,
                 visibility
               } = {}) {
-  if(!(this instanceof Game)) return new Game({id, ownerId, players, map, maxPlayers, visibility})
+  if(!(this instanceof Game)) {
+    return new Game({
+      id,
+      title,
+      ownerId,
+      players,
+      map,
+      maxPlayers,
+      visibility
+    })
+  }
   this.id = id || null
   this.title = title || ''
   this.ownerId = ownerId || null
