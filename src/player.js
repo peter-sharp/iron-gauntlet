@@ -3,9 +3,8 @@ const uuid = require('uuid/v4')
 
 
 function makePlayer({id, name, colour, role} = {}) {
-  id = id || uuid()
   return {
-    id,
+    id: id || uuid(),
     name: name || '',
     colour: colour || getDefaultColour(id),
     role: role || 'player'
