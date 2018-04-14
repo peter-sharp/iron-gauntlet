@@ -1,3 +1,4 @@
+const Game = require('./game')
 function getCurrentGame(state) {
   return state.gamesIndexed[state.params.game]
 }
@@ -31,15 +32,19 @@ function gameStore(state, events) {
     state.currentGame = game
     events.emit(state.events.RENDER)
   })
-
   events.on(state.events.ADD_GAME, addGame)
+  events.on(state.events.SETUP_NEW_GAME, addCreatorToGame)
 
   function addGame (game) {
     state.games.push(game)
     state.gamesIndexed[game.id] = game
   }
 
-
+  function addCreatorToGame(game) {
+    game = Game(game)
+    game = Game.addPlayer(game, state.currentPlayer)
+    state.currentGame = game
+  }
 }
 
 module.exports = gameStore

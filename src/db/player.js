@@ -1,11 +1,24 @@
 const Player = require('player')
-
+const isError = require('lodash/fp/isError')
 function getCurrentPlayer () {
-  return localStorage.currentPlayer ? Player(JSON.parse(localStorage.currentPlayer)) : false
+  let currentPlayer = localStorage.currentPlayer
+
+  if(currentPlayer) {
+    try {
+      currentPlayer = JSON.parse(localStorage.currentPlayer)
+    } catch (e) {
+      console.error(e)
+      currentPlayer = false
+    }
+  } else {
+    currentPlayer = false
+  }
+
+  return currentPlayer ? Player(currentPlayer) : currentPlayer
 }
 
 function setCurrentPlayer (player) {
-  localStorage.currentPlayer = JSON.stringify(player)
+  if(player) localStorage.currentPlayer = JSON.stringify(player)
 }
 
 function playerStore (state, events) {

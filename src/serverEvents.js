@@ -7,6 +7,7 @@ const enterGameLobby = curry(function (state, events, game) {
   state.currentGame = game
   events.emit(state.events.PUSHSTATE, `/games/${game.id}`)
   events.emit(state.events.LOBBY_JOINED, state.currentGame)
+  debugger
   events.emit(state.events.UPDATE_CURRENT_PLAYER, Game.getPlayer(state.currentGame, state.currentPlayer))
   return state.currentGame
 })
