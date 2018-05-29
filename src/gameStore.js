@@ -1,4 +1,6 @@
 const Game = require('./game')
+const curry = require('lodash/fp/curry')
+
 function getCurrentGame(state) {
   return state.gamesIndexed[state.params.game]
 }
@@ -6,7 +8,6 @@ function getCurrentGame(state) {
 function updateCurrentGame(state, game) {
   return state.gamesIndexed[state.params.game] = game
 }
-
 
 function gameStore(state, events) {
   state.games = state.games || []
@@ -32,8 +33,6 @@ function gameStore(state, events) {
     state.currentGame = game
     events.emit(state.events.RENDER)
   })
-  events.on(state.events.ADD_GAME, addGame)
-  events.on(state.events.SETUP_NEW_GAME, addCreatorToGame)
 
   function addGame (game) {
     state.games.push(game)
@@ -45,6 +44,22 @@ function gameStore(state, events) {
     game = Game.addPlayer(game, state.currentPlayer)
     state.currentGame = game
   }
+
+  const updatePlayerInGame = curry(function(predicate, update) {
+    let game = Game(state.currentGame)
+    let i = game.players.findIndex(predicate)
+    game.players[i] = Object.assign(game.players[i], update)
+    debugger
+    state.currentGame = game
+
+    return state.currentGame
+  })
+  debugger
+
+  events.on(state.events.ADD_GAME, addGame)
+  events.on(state.events.SETUP_NEW_GAME, addCreatorToGame)
+  events.on(state.events.UPDATED_CURRENT_PLAYER, updatePlayerInGame(player => player.id == state.currentPlayer.id))
+
 }
 
 module.exports = gameStore

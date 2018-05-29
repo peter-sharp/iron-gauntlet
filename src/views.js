@@ -38,7 +38,7 @@ function setupMenuView (state, emit) {
   game.mapOptions = game.mapOptions || []
   let remainingSlots = maxPlayers - game.players.length
   let isOwner = Game.isOwner(game, state.currentPlayer)
-  debugger
+
   return html`<form onsubmit=${saveGame}>
                 <section>
                   ${displayIf(
@@ -72,8 +72,8 @@ function setupMenuView (state, emit) {
                       player.id == state.currentPlayer.id,
                       html`
                       <li class="player-list__player" id="player-${player.id}-form">
-                        <label>name <input type="text" value="${player.name}"/></label>
-                        <label>colour <input type="color" value="#${player.colour}"></label>
+                        <label>name <input type="text" name="name" value="${player.name}" onchange=${updateCurrentPlayer} /></label>
+                        <label>colour <input type="color" name="colour" value="#${player.colour}" onchange=${updateCurrentPlayer} /></label>
                       </li>`,
                       html`
                       <li class="player-list__player" id="player-${player.id}-display">
@@ -104,6 +104,11 @@ function setupMenuView (state, emit) {
   function updateMaxPlayers(ev) {
     ev.preventDefault()
     emit(state.events.UPDATE_MAX_PLAYERS, this.value)
+  }
+
+  function updateCurrentPlayer(ev) {
+    emit(state.events.UPDATE_CURRENT_PLAYER, { [this.name]: this.value})
+    debugger
   }
 }
 

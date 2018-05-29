@@ -1,5 +1,6 @@
 const Player = require('player')
 const isError = require('lodash/fp/isError')
+
 function getCurrentPlayer () {
   let currentPlayer = localStorage.currentPlayer
 
@@ -23,10 +24,7 @@ function setCurrentPlayer (player) {
 
 function playerStore (state, events) {
   state.currentPlayer = getCurrentPlayer() || Player()
-  setCurrentPlayer(state.currentPlayer)
-
-  events.on(state.events.UPDATE_CURRENT_PLAYER, function updateCurrentPlayer(player) {
-    state.currentPlayer = player
+  events.on(state.events.UPDATED_CURRENT_PLAYER, function saveCurrentPlayer() {
     setCurrentPlayer(state.currentPlayer)
   })
 }

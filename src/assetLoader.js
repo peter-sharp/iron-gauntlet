@@ -24,7 +24,7 @@ loadImage.loadImages = function(srcs) {
 }
 
 
-var indexBy = curry(function (key, val, acc, obj) {
+const indexBy = curry(function (key, val, acc, obj) {
   acc[obj[key]] = val ? obj[val] : obj
   return acc
 })
