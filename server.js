@@ -38,7 +38,6 @@ function handleClientRoute (req, res) {
 
 io.on('connection', socket => {
   console.info('A player connected')
-  playerStore.updatePlayer(socket)
 
   socket.emit('games', gameStore.getPublicGames())
 
@@ -55,7 +54,7 @@ io.on('connection', socket => {
 
   socket.on('joinGame', (id, player) => {
     playerStore.updatePlayer(socket, player)
-    player = playerStore.getPlayer(socket)
+    player = playerStore.getPlayerById(player)
     let game = gameStore.getGame(id)
 
 

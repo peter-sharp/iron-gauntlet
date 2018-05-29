@@ -2,16 +2,23 @@ const isObject = require('lodash/fp/isObject')
 const Player = require('./src/player')
 const faker = require('faker')
 
-var players = {};
+const players = {}
+const playersBySocketId = {}
 exports.updatePlayer = function(socketId, player = null) {
   if(isObject(socketId)) socketId = socketId.id
   player = player ? Player(player) : Player()
   player.name = player.name || faker.internet.userName()
 
-  players[socketId] = player
+  players[player.id] = player
+  playersBySocketId[socketId] = player
 }
 
-exports.getPlayer = function(socketId) {
-  if(isObject(socketId)) socketId = socketId.id;
-  return players[socketId] || false;
+exports.getPlayerBySocketId = function(socketId) {
+  if(isObject(socketId)) socketId = socketId.id
+  return playersBySocketId[socketId] || false
+}
+
+exports.getPlayerById = function(id) {
+  if(isObject(id)) id = id.id
+  return players[id] || false
 }
