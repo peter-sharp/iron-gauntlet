@@ -3,7 +3,7 @@
 - [x] handle adding player to all client games once joined
 - [x] generate map options once per game and give to all players
 - [x] make placeholder game names persistent until changed
-- [ ] server render / handle app routes
+- [x] server render / handle app routes
 - [ ] create back to games button
 - [ ] handle when player leaves by closing browser/tab
 - [ ] handle when player leaves game by going back to games
