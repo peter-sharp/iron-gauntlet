@@ -3,6 +3,8 @@ const {renderMap} = require('./renderMap')
 const partial = require('lodash/fp/partial')
 const times = require('lodash/fp/times')
 const Game = require('./game')
+const mapSelectionView = require('./mapSelection/view.js')
+
 
 function mainView (subView, state, emit) {
   return html`<main>
@@ -85,14 +87,7 @@ function setupMenuView (state, emit) {
                       <li class="player-list__player player-list__player--placeholder" id="player-placeholder-${i}" ></li>`, remainingSlots)}
                   </ul>
                 </section>
-                <section>
-                  <h6>Choose Map</h6>
-                  <ul class="map-options">
-                    ${game.mapOptions.map( map => {
-                      return html`<li id="${map.id}" class="map-options__option">${state.images ? state.mapCanvases[map.id].render(partial(renderMap, [state.images['/assets/tilemaps/tilemap.svg'], map])) : ''}</li>`
-                    })}
-                  </ul>
-                </section>
+                ${mapSelectionView(game, state, emit)}
                 <button class="button--primary" type="submit">save</submit>
               </form>`
   function saveGame(ev) {
@@ -108,7 +103,7 @@ function setupMenuView (state, emit) {
 
   function updateCurrentPlayer(ev) {
     emit(state.events.UPDATE_CURRENT_PLAYER, { [this.name]: this.value})
-    debugger
+
   }
 }
 

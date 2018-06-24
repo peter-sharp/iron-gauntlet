@@ -10,7 +10,8 @@ function playerStore (state, events) {
 
   events.on(state.events.UPDATE_CURRENT_PLAYER, function updateCurrentPlayer(update) {
     state.currentPlayer = Object.assign(state.currentPlayer, update)
-    events.emit(state.events.UPDATED_CURRENT_PLAYER)
+    
+    events.emit(state.events.UPDATED_CURRENT_PLAYER, update)
     events.emit(state.events.RENDER)
   })
 }

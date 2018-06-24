@@ -49,12 +49,12 @@ function gameStore(state, events) {
     let game = Game(state.currentGame)
     let i = game.players.findIndex(predicate)
     game.players[i] = Object.assign(game.players[i], update)
-    debugger
+    
     state.currentGame = game
 
     return state.currentGame
   })
-  debugger
+  
 
   events.on(state.events.ADD_GAME, addGame)
   events.on(state.events.SETUP_NEW_GAME, addCreatorToGame)

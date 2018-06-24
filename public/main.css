@@ -59,6 +59,9 @@ canvas {
   width: 15%;
 }
 
+.option--voted {
+  outline: solid 2px #fff;
+}
 
 .fit-image {
   width: 100%;
