@@ -1,13 +1,13 @@
-var path = require('path');
+const path = require('path');
 
-module.exports = {
-  entry: './src',
+const config = {
+  entry: path.resolve(__dirname, "src"),
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'public')
   },
   resolve:{
-    modules: [path.resolve(__dirname, "src"), "node_modules", path.resolve(__dirname, "assets")]
+    modules: [path.resolve(__dirname, "src"), path.resolve(__dirname, "assets"), "node_modules"]
   },
   module: {
     rules: [
@@ -23,3 +23,5 @@ module.exports = {
   },
   devtool: 'source-map'
 }
+
+module.exports = config

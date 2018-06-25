@@ -2,7 +2,7 @@ const partial = require('lodash/fp/partial')
 const Map = require('./map')
 
 function renderMap(tileAtlas, map, ctx, canvas) {
-
+    debugger
     canvas.width = map.cols * map.tsize
     canvas.height = map.rows * map.tsize
 

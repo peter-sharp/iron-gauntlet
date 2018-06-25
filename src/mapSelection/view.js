@@ -1,4 +1,4 @@
-const {renderMap} = require('renderMap')
+const {renderMap} = require('./../renderMap')
 const partial = require('lodash/fp/partial')
 const html = require('choo/html')
 
