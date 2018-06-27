@@ -1,4 +1,4 @@
-const Player = require('player')
+const Player = require('./../player')
 const isError = require('lodash/fp/isError')
 
 function getCurrentPlayer () {

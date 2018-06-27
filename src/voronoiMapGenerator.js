@@ -6,16 +6,9 @@ const partial = require('lodash/fp/partial')
 const flow = require('lodash/fp/flow')
 const values = require('lodash/fp/values')
 
-function generate(terrainTypes, defaultTerrainType, map) {
-  var maxPoints = map.rows + map.cols / 4
-  var vects = generateRandomVects(map, maxPoints)
-  var points = vects.map(vec => makeTerrainPoint(randomTerrainName(terrainTypes), vec))
-  var terrainIdPicker = partial(pickRandomTerrainId, [terrainTypes, defaultTerrainType])
 
-  return GenerateVoronoiTilePattern(terrainIdPicker, points, map)
-}
 
-var randomTerrainName = flow([values, randomPick, property('name')])
+const randomTerrainName = flow([values, randomPick, property('name')])
 
 function randomPick(arr) {
   return arr[random(0, arr.length - 1)]
@@ -32,7 +25,9 @@ function getTerrainTypeFromPoint(terrainTypes, defaultTerrainType, point) {
   return point ? terrainTypes[point.terrainName] : terrainTypes[defaultTerrainType]
 }
 
-var pickRandomTerrainId = flow([getTerrainTypeFromPoint, property('ids'), randomPick])
+const pickRandomTerrainId = flow([getTerrainTypeFromPoint, property('ids'), randomPick])
+
+
 
 function GenerateVoronoiTilePattern(terrainIdPicker, points, map){
 
@@ -58,6 +53,15 @@ function GenerateVoronoiTilePattern(terrainIdPicker, points, map){
   })
 }
 
+
+function generate(terrainTypes, defaultTerrainType, map) {
+  var maxPoints = map.rows + map.cols / 4
+  var vects = generateRandomVects(map, maxPoints)
+  var points = vects.map(vec => makeTerrainPoint(randomTerrainName(terrainTypes), vec))
+  const terrainIdPicker = partial(pickRandomTerrainId, [terrainTypes, defaultTerrainType])
+
+  return GenerateVoronoiTilePattern(terrainIdPicker, points, map)
+}
 
 /**
  * creates randomly located points with a random tileType

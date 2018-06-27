@@ -18,6 +18,7 @@ function mapStore (state, events) {
     land: TerrainType({name: 'land', ids: [1,2]}),
     water: TerrainType({name: 'water', ids: [0]})
   }
+  
   state.mapCols = MAP_COLS
   state.mapRows = MAP_ROWS
   state.mapOptCount = OPTION_COUNT
