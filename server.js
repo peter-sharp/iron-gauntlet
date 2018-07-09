@@ -43,6 +43,7 @@ io.on('connection', socket => {
 
   socket.on('disconnect', function(){
     // TODO remove player
+    playerStore.removePlayerBySocketId(socket)
     console.info('A player disconnected')
   });
 
@@ -53,6 +54,7 @@ io.on('connection', socket => {
   })
 
   socket.on('joinGame', (id, player) => {
+    player.gameId = id
     playerStore.updatePlayer(socket, player)
     player = playerStore.getPlayerById(player)
     let game = gameStore.getGame(id)

@@ -2,13 +2,14 @@ const tinycolor  = require('tinycolor2')
 const uuid = require('uuid/v4')
 
 
-function Player({id, name, colour, role} = {}) {
+function Player({id, name, colour, role, gameId} = {}) {
   if(!(this instanceof Player)) {
     return new Player({
       id,
       name,
       colour,
-      role
+      role,
+      gameId
     })
   }
 
@@ -16,6 +17,7 @@ function Player({id, name, colour, role} = {}) {
   this.name = name || '',
   this.colour = colour || getDefaultColour(this.id),
   this.role = role || 'player'
+  this.gameId = gameId || null
 }
 
 function getDefaultColour(id){
