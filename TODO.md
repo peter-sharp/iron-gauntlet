@@ -1,5 +1,6 @@
 # todo
-
+- [ ] fix player double ups on game page reload
+- [ ] players in game.players should be ids instead
 - [x] handle adding player to all client games once joined
 - [x] generate map options once per game and give to all players
 - [x] make placeholder game names persistent until changed
