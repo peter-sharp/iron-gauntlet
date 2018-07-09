@@ -22,3 +22,13 @@ exports.getPlayerById = function(id) {
   if(isObject(id)) id = id.id
   return players[id] || false
 }
+
+exports.removePlayerById = function(id) {
+  if(isObject(id)) id = id.id
+  delete players[id]
+}
+
+exports.removePlayerBySocketId = function(socketId) {
+  if(isObject(socketId)) socketId = socketId.id
+  delete playersBySocketId[socketId]
+}
