@@ -36,7 +36,7 @@ function gameSelectionView(state, emit) {
 function setupMenuView (state, emit) {
   let game = state.currentGame || {}
   let maxPlayers = game.maxPlayers
-  game.players = game.players || []
+  let players =  [state.currentPlayer]
   game.mapOptions = game.mapOptions || []
   let remainingSlots = maxPlayers - game.players.length
   let isOwner = Game.isOwner(game, state.currentPlayer)
@@ -70,7 +70,7 @@ function setupMenuView (state, emit) {
                         </p>`)}
 
                   <ul class="player-list">
-                    ${game.players.map(player => displayIf(
+                    ${players.map(player => displayIf(
                       player.id == state.currentPlayer.id,
                       html`
                       <li class="player-list__player" id="player-${player.id}-form">

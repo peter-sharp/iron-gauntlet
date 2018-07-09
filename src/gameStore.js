@@ -45,20 +45,11 @@ function gameStore(state, events) {
     state.currentGame = game
   }
 
-  const updatePlayerInGame = curry(function(predicate, update) {
-    let game = Game(state.currentGame)
-    let i = game.players.findIndex(predicate)
-    game.players[i] = Object.assign(game.players[i], update)
-    
-    state.currentGame = game
 
-    return state.currentGame
-  })
-  
+
 
   events.on(state.events.ADD_GAME, addGame)
   events.on(state.events.SETUP_NEW_GAME, addCreatorToGame)
-  events.on(state.events.UPDATED_CURRENT_PLAYER, updatePlayerInGame(player => player.id == state.currentPlayer.id))
 
 }
 
