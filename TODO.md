@@ -1,4 +1,5 @@
 # todo
+- [ ] game name and visibility can be set
 - [x] fix player colour updated with two hashes
 - [x] fix server crash when game link points to game that doesn't exist
 - [ ] fix player double ups on game page reload
