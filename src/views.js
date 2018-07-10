@@ -43,34 +43,34 @@ function setupMenuView (state, emit) {
 
   return html`<form onsubmit=${saveGame}>
                 <section>
-                  ${displayIf(
+                  ${ifElse(
                     isOwner,
                     html`<p>
                       <label>Name</label>
-                      <input type="text" value="${game.title}"/>
+                      <input type="text" name="title" oninput=${updateCurrentGame} value="${game.title}"/>
                     </p>`,
                     html`<h2>${game.title}</h2>`
                   )}
 
-                  ${displayIf(
+                  ${ifElse(
                     isOwner,
                     html`<p>
                             <label>Visibility</label>
-                            <select>
-                              <option>private</option>
-                              <option>public</option>
+                            <select name="visibility" onchange=${updateCurrentGame}>
+                              <option ${ifElse(game.visibility == 'private', 'selected', '')} >private</option>
+                              <option ${ifElse(game.visibility == 'public', 'selected', '')} >public</option>
                             </select>
                           </p>`)}
-                  ${displayIf(
+                  ${ifElse(
                     isOwner,
                     html`
                         <P>
                           <label>number of players</label>
-                          <input type="number" oninput=${updateMaxPlayers} value="${maxPlayers}">
+                          <input type="number" name="maxPlayers" oninput=${updateCurrentGame} value="${maxPlayers}">
                         </p>`)}
 
                   <ul class="player-list">
-                    ${players.map(player => displayIf(
+                    ${players.map(player => ifElse(
                       player.id == state.currentPlayer.id,
                       html`
                       <li class="player-list__player" id="player-${player.id}-form">
@@ -96,9 +96,9 @@ function setupMenuView (state, emit) {
   function addName(ev) {
     emit(state.events.UPDATE_NAME, this.value)
   }
-  function updateMaxPlayers(ev) {
+  function updateCurrentGame(ev) {
     ev.preventDefault()
-    emit(state.events.UPDATE_MAX_PLAYERS, this.value)
+    emit(state.events.UPDATE_CURRENT_GAME, {[this.name]: this.value})
   }
 
   function updateCurrentPlayer(ev) {
@@ -107,8 +107,8 @@ function setupMenuView (state, emit) {
   }
 }
 
-function displayIf(predicate, el, fallbackEl = '') {
-  return predicate ? el : fallbackEl
+function ifElse(predicate, val, defaultVal = '') {
+  return predicate ? val : defaultVal
 }
 
 module.exports = {mainView, gameSelectionView, setupMenuView}

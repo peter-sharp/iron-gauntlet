@@ -24,12 +24,11 @@ function gameStore(state, events) {
   state.events.GAME_CREATED       = 'gameCreated'
   state.events.LOBBY_JOINED       = 'lobbyJoined'
   state.events.GAME_STARTED       = 'gameStarted'
-  state.events.UPDATE_MAX_PLAYERS = 'updateMaxPlayers'
+  state.events.UPDATE_CURRENT_GAME = 'updateCurrentGame'
   state.events.GAMES              = 'games'
 
-  events.on(state.events.UPDATE_MAX_PLAYERS, maxPlayers => {
-    let game = Object.assign({}, state.currentGame)
-    game.maxPlayers = maxPlayers
+  events.on(state.events.UPDATE_CURRENT_GAME, update => {
+    let game = Object.assign({}, state.currentGame, update)
     state.currentGame = game
     events.emit(state.events.RENDER)
   })
