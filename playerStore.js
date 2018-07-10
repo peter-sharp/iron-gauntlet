@@ -10,12 +10,14 @@ exports.updatePlayer = function(socketId, player = null) {
   player.name = player.name || faker.internet.userName()
 
   players[player.id] = player
-  playersBySocketId[socketId] = player
+  playersBySocketId[socketId] = player.id
 }
 
 exports.getPlayerBySocketId = function(socketId) {
   if(isObject(socketId)) socketId = socketId.id
-  return playersBySocketId[socketId] || false
+  let playerId = playersBySocketId[socketId]
+
+  return players[playerId] || false
 }
 
 exports.getPlayerById = function(id) {
@@ -30,5 +32,7 @@ exports.removePlayerById = function(id) {
 
 exports.removePlayerBySocketId = function(socketId) {
   if(isObject(socketId)) socketId = socketId.id
+  let playerId = playersBySocketId[socketId]
   delete playersBySocketId[socketId]
+  delete players[playerId]
 }
