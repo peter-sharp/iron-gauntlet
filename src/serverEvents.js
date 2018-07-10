@@ -7,8 +7,8 @@ const enterGameLobby = curry(function (state, events, game) {
   state.currentGame = game
   events.emit(state.events.PUSHSTATE, `/games/${game.id}`)
   events.emit(state.events.LOBBY_JOINED, state.currentGame)
-  
-  events.emit(state.events.UPDATE_CURRENT_PLAYER, Game.getPlayer(state.currentGame, state.currentPlayer))
+
+  events.emit(state.events.UPDATE_CURRENT_PLAYER, {gameId: game.id})
   return state.currentGame
 })
 
@@ -24,6 +24,7 @@ function serverEvents (socket, state, events) {
   state.events.LOBBY_JOINED = state.events.LOBBY_JOINED || 'lobbyJoined'
 
   if(state.currentGame) {
+    console.assert(state.currentPlayer, 'current player is missing')
     socket.emit(state.events.JOIN_GAME, state.currentGame.id, state.currentPlayer)
     socket.once(state.events.JOINED_GAME, game => {
       events.emit(state.events.ADD_GAME, game)
