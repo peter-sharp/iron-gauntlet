@@ -54,6 +54,7 @@ Game.getPlayer = function(game, playerId) {
 
 Game.hasPlayer = function(game, playerId) {
   if(isObject(playerId)) playerId = playerId.id
+  debugger
   return game.players.indexOf(playerId) > -1
 }
 
