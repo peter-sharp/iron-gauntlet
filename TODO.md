@@ -1,5 +1,5 @@
 # todo
-- [ ] fix server crash when game link points to game that doesn't exist
+- [x] fix server crash when game link points to game that doesn't exist
 - [ ] fix player double ups on game page reload
 - [ ] players in game.players should be ids instead
 - [x] handle adding player to all client games once joined

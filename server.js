@@ -21,12 +21,21 @@ clientApp.use(gameStore)
 app.get('/games/:game', handleClientRoute)
 
 function handleClientRoute (req, res) {
+  let currentGame = gameStore.getGame(req.params.game)
+  console.info(req.params.game, currentGame)
+  if(req.params.game && !currentGame) {
+    res.redirect('/')
+    return
+  }
+
   fs.readFile('./public/index.html', (err, data) => {
     if (err) throw err;
+
     let initialState = {
       games: gameStore.getPublicGames(),
-      currentGame: gameStore.getGame(req.params.game)
+      currentGame
     }
+
     let $ = cheerio.load(data)
     let $app = cheerio('main', clientApp.toString(req.url, initialState))
     $(".iron-gauntlet").append($app.html())
@@ -35,6 +44,7 @@ function handleClientRoute (req, res) {
   });
 
 }
+
 
 io.on('connection', socket => {
   console.info('A player connected')

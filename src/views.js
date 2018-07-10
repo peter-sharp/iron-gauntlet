@@ -34,10 +34,10 @@ function gameSelectionView(state, emit) {
 }
 
 function setupMenuView (state, emit) {
-  let game = state.currentGame || {}
+  let game = state.currentGame || Game()
   let maxPlayers = game.maxPlayers
   let players =  [state.currentPlayer]
-  game.mapOptions = game.mapOptions || []
+  game.mapOptions = game.mapOptions
   let remainingSlots = maxPlayers - game.players.length
   let isOwner = Game.isOwner(game, state.currentPlayer)
 
