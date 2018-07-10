@@ -75,7 +75,7 @@ function setupMenuView (state, emit) {
                       html`
                       <li class="player-list__player" id="player-${player.id}-form">
                         <label>name <input type="text" name="name" value="${player.name}" onchange=${updateCurrentPlayer} /></label>
-                        <label>colour <input type="color" name="colour" value="#${player.colour}" onchange=${updateCurrentPlayer} /></label>
+                        <label>colour <input type="color" name="colour" value="${player.colour}" onchange=${updateCurrentPlayer} /></label>
                       </li>`,
                       html`
                       <li class="player-list__player" id="player-${player.id}-display">
