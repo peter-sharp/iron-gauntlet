@@ -28,7 +28,7 @@
   "scripts": {
     "start": "run-p build serve",
     "build": "parcel watch src/index.js -d public --out-file bundle.js",
-    "serve": "node server.js",
+    "serve": "node --inspect server.js",
     "test": "mocha"
   }
 }
