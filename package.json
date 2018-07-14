@@ -23,11 +23,11 @@
     "babel-preset-env": "^1.7.0",
     "mocha": "^5.2.0",
     "npm-run-all": "^4.1.2",
-    "parcel-bundler": "^1.9.3"
+    "parcel-bundler": "^1.9.4"
   },
   "scripts": {
     "start": "run-p build serve",
-    "build": "parcel watch src/index.js -d public --out-file bundle.js",
+    "build": "parcel watch src/index.js -d public",
     "serve": "node --inspect server.js",
     "test": "mocha"
   }
