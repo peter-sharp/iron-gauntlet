@@ -32,7 +32,7 @@ function handleClientRoute (req, res) {
     if (err) throw err;
 
     let initialState = {
-      games: gameStore.getPublicGames(),
+      games: gameStore.getGames(),
       currentGame
     }
 
@@ -49,7 +49,7 @@ function handleClientRoute (req, res) {
 io.on('connection', socket => {
   console.info('A player connected')
 
-  socket.emit('games', gameStore.getPublicGames())
+  socket.emit('games', gameStore.getGames())
 
   socket.on('disconnect', function(){
     // TODO remove player
@@ -61,6 +61,7 @@ io.on('connection', socket => {
 
     game = gameStore.updateGame(game)
     socket.emit('gameCreated', game)
+    console.info('gameCreated', game)
   })
 
   socket.on('joinGame', (id, player) => {
@@ -82,6 +83,7 @@ io.on('connection', socket => {
 
     socket.broadcast.to(`game_${game.id}`).emit('addPlayer', player)
     socket.emit('joinedGame', game)
+    console.info(`player ${player.name}(${player.id}) added to game ${game.title}(${game.id})`, game)
   }
 })
 

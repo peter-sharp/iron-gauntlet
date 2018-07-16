@@ -1,7 +1,7 @@
 const faker = require('faker')
 const uuid = require('uuid/v4')
 const Game = require('./src/game')
-
+const isMatch = require('lodash/fp/isMatch')
 let games = {};
 
 function gameStore(state, events) {
@@ -21,13 +21,17 @@ function getGame(id) {
   return id in games ? games[id] : false;
 }
 
-function getPublicGames() {
-  console.info(games)
-  return Object.values(games).filter(game => game.visibility == 'public')
+/**
+ * gets games in game store with given where
+ */
+function getGames(where = {visibility: 'public'}) {
+  let filteredGames = Object.values(games).filter(isMatch(where))
+  console.info('games', filteredGames)
+  return filteredGames
 }
 
 gameStore.updateGame = updateGame
 gameStore.getGame = getGame
-gameStore.getPublicGames = getPublicGames
+gameStore.getGames = getGames
 
 module.exports = gameStore
