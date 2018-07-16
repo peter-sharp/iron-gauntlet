@@ -25,6 +25,7 @@ function serverEvents (socket, state, events) {
 
   if(state.currentGame) {
     console.assert(state.currentPlayer, 'current player is missing')
+    debugger
     socket.emit(state.events.JOIN_GAME, state.currentGame.id, state.currentPlayer)
     socket.once(state.events.JOINED_GAME, game => {
       events.emit(state.events.ADD_GAME, game)
