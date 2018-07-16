@@ -22,6 +22,7 @@
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "mocha": "^5.2.0",
+    "nodemon": "^1.18.2",
     "npm-run-all": "^4.1.2",
     "parcel-bundler": "^1.9.3",
     "per-env": "^1.0.2"
@@ -29,7 +30,7 @@
   "scripts": {
     "start": "per-env",
     "start:production": "node server.js",
-    "start:development": "node --inspect server.js",
+    "start:development": "nodemon --inspect server.js",
     "watch:parcel": "parcel watch src/index.js -d public --out-file bundle.js",
     "develop": "run-p start:development watch:parcel",
     "test": "mocha"
