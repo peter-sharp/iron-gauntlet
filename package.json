@@ -31,8 +31,8 @@
     "start": "per-env",
     "start:production": "node server.js",
     "start:development": "nodemon --inspect server.js",
-    "watch:parcel": "parcel watch src/index.js -d public --out-file bundle.js",
+    "watch:parcel": "parcel watch src/index.js -d public",
     "develop": "run-p start:development watch:parcel",
-    "test": "mocha"
+    "parcel-bundler": "^1.9.4"
   }
 }
