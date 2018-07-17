@@ -1,9 +1,10 @@
 # todo
+- [ ] Show other players that have joined the game
 - [x] game name and visibility can be set
 - [x] fix player colour updated with two hashes
 - [x] fix server crash when game link points to game that doesn't exist
-- [ ] fix player double ups on game page reload
-- [ ] players in game.players should be ids instead
+- [x] fix player double ups on game page reload
+- [x] players in game.players should be ids instead
 - [x] handle adding player to all client games once joined
 - [x] generate map options once per game and give to all players
 - [x] make placeholder game names persistent until changed

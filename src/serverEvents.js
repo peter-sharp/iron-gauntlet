@@ -16,23 +16,25 @@ const enterGameLobby = curry(function (state, events, game) {
  * communicates to server viw given socket
  */
 function serverEvents (socket, state, events) {
-  state.events.CREATE_GAME = state.events.CREATE_GAME || 'createGame'
-  state.events.JOIN_GAME = state.events.JOIN_GAME || 'joinGame'
-  state.events.JOINED_GAME = state.events.JOINED_GAME || 'joinedGame'
-  state.events.GAMES = state.events.GAMES || 'games'
-  state.events.ADD_PLAYER = state.events.ADD_PLAYER || 'addPlayer'
-  state.events.LOBBY_JOINED = state.events.LOBBY_JOINED || 'lobbyJoined'
+  state.events.CREATE_GAME = state.events.CREATE_GAME
+  state.events.JOIN_GAME = state.events.JOIN_GAME
+  state.events.JOINED_GAME = state.events.JOINED_GAME
+  state.events.GAMES = state.events.GAMES
+  state.events.ADD_PLAYER = state.events.ADD_PLAYER
+  state.events.LOBBY_JOINED = state.events.LOBBY_JOINED
 
-  if(state.currentGame) {
-    console.assert(state.currentPlayer, 'current player is missing')
-    debugger
-    socket.emit(state.events.JOIN_GAME, state.currentGame.id, state.currentPlayer)
-    socket.once(state.events.JOINED_GAME, game => {
-      events.emit(state.events.ADD_GAME, game)
-      state.currentGame = game
-      events.emit(state.events.LOBBY_JOINED, state.currentGame)
-    })
-  }
+  events.on(state.events.INITIALIZED_CURRENT_PLAYER, function rejoinCurrentGame() {
+    if(state.currentGame) {
+      console.assert(state.currentPlayer, 'current player is missing')
+      socket.emit(state.events.JOIN_GAME, state.currentGame.id, state.currentPlayer)
+      socket.once(state.events.JOINED_GAME, game => {
+        events.emit(state.events.ADD_GAME, game)
+        state.currentGame = game
+        events.emit(state.events.LOBBY_JOINED, state.currentGame)
+      })
+    }
+  })
+
 
   events.on(state.events.CREATE_GAME, function createNewGame() {
     state.currentGame = Game({ownerId: state.currentPlayer.id})

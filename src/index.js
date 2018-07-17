@@ -6,10 +6,10 @@ import playerDb from './db/player'
 import assetStore from './assetStore'
 import partial from 'lodash/fp/partial'
 const socket = io()
-app.use(partial(serverEvents, [socket]))
 app.use(assetStore)
 app.use(gameStore)
 app.use(playerDb)
+app.use(partial(serverEvents, [socket]))
 
 app.mount('.iron-gauntlet')
 
