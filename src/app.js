@@ -5,7 +5,7 @@ const mapSelectionStore = require('./mapSelection/store')
 const playerStore = require('./playerStore')
 const {mainView} = require('./views')
 const {gameSelectionView} = require('./views')
-const {setupMenuView} = require('./views')
+const gameSetupView = require('./gameSetupView')
 
 const app = Choo()
 
@@ -15,6 +15,6 @@ app.use(mapStore)
 app.use(mapSelectionStore)
 
 app.route('/', partial(mainView, [gameSelectionView]))
-app.route('/games/:game', partial(mainView, [setupMenuView]))
+app.route('/games/:game', partial(mainView, [gameSetupView]))
 
 module.exports = app

@@ -7,6 +7,8 @@ function playerStore (state, events) {
   state.events.UPDATE_CURRENT_PLAYER = 'updateCurrentPlayer';
   state.events.UPDATED_CURRENT_PLAYER = 'updatedCurrentPlayer';
   state.currentPlayer =  state.currentPlayer || Player()
+
+  state.playerGameStates = Player.gameStates
   state.players = []
 
   events.on(state.events.UPDATE_CURRENT_PLAYER, function updateCurrentPlayer(update) {

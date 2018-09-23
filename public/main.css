@@ -32,6 +32,19 @@ button {
   background-color: inherit;
 }
 
+.button:disabled,
+input[type="color"]:disabled,
+input[type="submit"]:disabled,
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.2;
+}
+
+label > *,
+label + * {
+  margin-left: 1rem;
+}
+
 canvas {
   display: block;
 }
@@ -45,6 +58,16 @@ canvas {
 .map-options {
   list-style-type: none;
   padding-left: 0;
+}
+
+.player-list > * + * {
+  margin-top: 1rem;
+}
+
+.player-list__player--placeholder {
+    height: 1.5rem;
+    background-color: rgba(0, 10, 20, 0.3);
+    width: 20.5rem;
 }
 
 .map-options {
@@ -120,4 +143,20 @@ canvas {
 
 .button--add:hover {
   background-color: var(--colour-primary-transparent);
+}
+
+.overlay-basic {
+  position: fixed;
+  background-color: rgba(0,0,0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.hidden {
+  display: none;
 }
